@@ -1,0 +1,205 @@
+<ng-container *ngIf="cartItems.length; else cartItemShow">
+  <section>
+    <div class="container py-5 h-100">
+      <div class="row d-flex justify-content-center align-items-center h-100">
+        <div class="col-12">
+          <div class="card border-0">
+            <div class="card-body p-0">
+              <div class="row">
+                <div class="col-lg-8">
+                  <div *ngFor="let cart of cartItems; let i = index">
+                    <div class="mb-4 d-flex align-items-center">
+                      <div class="col-md-2 col-lg-2 col-xl-2">
+                        <img
+                          [src]="baseUrl + cart.image + '.jpeg'"
+                          style="height: 100px"
+                          alt="Cotton T-shirt"
+                        />
+                      </div>
+                      <div class="col-md-3 col-lg-3 col-xl-3">
+                        <h6 class="text-muted text-uppercase">
+                          {{ cart.name }}
+                        </h6>
+                      </div>
+                      <div class="col-md-3 col-lg-3 col-xl-2 d-flex">
+                        <input
+                          min="1"
+                          name="quantity"
+                          [value]="cart.quantity"
+                          [(ngModel)]="cart.quantity"
+                          type="number"
+                          class="form-control form-control-sm"
+                          (change)="changeSubtotal()"
+                        />
+                      </div>
+                      <div class="col-md-3 col-lg-2 col-xl-2 offset-lg-1">
+                        <ng-container
+                          *ngIf="hasSpecialPrice(cart); else hasSpecial"
+                        >
+                          <ng-container *ngIf="hasFixedPrice(cart)">
+                            <h6 class="mb-0">
+                              ₹{{ cart.quantity * cart.specialPrice }}
+                            </h6>
+                          </ng-container>
+                          <ng-container *ngIf="!hasFixedPrice(cart)">
+                            <h6 class="mb-0">
+                              ₹{{
+                                cart.quantity *
+                                  calculateDiscountedPrice(
+                                    cart.price,
+                                    cart.specialPrice
+                                  )
+                              }}
+                            </h6>
+                          </ng-container>
+                        </ng-container>
+                        <ng-template #hasSpecial>
+                          <h6 class="mb-0">
+                            ₹{{ cart.quantity * cart.price }}
+                          </h6>
+                        </ng-template>
+                      </div>
+                      <div class="col-md-1 col-lg-1 col-xl-1 text-end">
+                        <button
+                          class="btn btn-danger"
+                          (click)="removeFromCart(cart._id)"
+                        >
+                          Remove
+                        </button>
+                      </div>
+                    </div>
+
+                    <hr class="my-4" *ngIf="i < cartItems.length - 1" />
+                  </div>
+                </div>
+                <div class="col-lg-4 bg-light">
+                  <div class="p-4">
+                    <h4 class="fw-bold mb-5 mt-2 pt-1">PRICE DETAILS</h4>
+                    <hr class="my-4" />
+                    <div class="d-flex justify-content-between mb-4">
+                      <h5>Price ({{ cartItems.length }} items)</h5>
+                      <h5>₹{{ subTotal }}</h5>
+                    </div>
+                    <hr class="my-4" />
+                    <div class="d-flex justify-content-between mb-5">
+                      <h5>Sub Total</h5>
+                      <h5>₹ {{ subTotal }}</h5>
+                    </div>
+                    <div
+                      class="d-flex justify-content-between text-success mb-5"
+                      *ngIf="isCouponValid && !isMinOrder"
+                    >
+                      <h5>Coupon Discount</h5>
+                      <h5 *ngIf="couponData?.isfixed">
+                        ₹ {{ couponDiscount }}
+                      </h5>
+                      <h5 *ngIf="!couponData?.isfixed">
+                        ₹ {{ (subTotal * couponDiscount) / 100 }}
+                      </h5>
+                    </div>
+                    <hr class="my-4" />
+
+                    <div
+                      class="d-flex justify-content-between text-danger mb-5"
+                    >
+                      <h5>Order Total</h5>
+                      <h5>₹ {{ ItemTotalPrice }}</h5>
+                    </div>
+                    <div class="mb-5">
+                      <div class="d-flex justify-content-between">
+                        <input
+                          type="text"
+                          class="form-check"
+                          [(ngModel)]="couponCode"
+                          placeholder="Enter coupon code"
+                        />
+
+                        <button
+                          (click)="applyCoupon(couponCode, true)"
+                          class="btn btn-outline-primary"
+                          [disabled]="!couponCode"
+                        >
+                          Apply
+                        </button>
+                      </div>
+                      <ng-container *ngIf="isMinOrder !== null">
+                        <p *ngIf="isMinOrder" class="text-danger">
+                          Min order amount is
+                          {{ couponData?.minOrder }}.
+                        </p>
+                      </ng-container>
+                      <ng-container *ngIf="duplicateCouponCode !== null">
+                        <p *ngIf="duplicateCouponCode" class="text-danger mb-0">
+                          Coupon code applied already.
+                        </p>
+                      </ng-container>
+                      <ng-container
+                        *ngIf="isCouponValid !== null && !isMinOrder"
+                      >
+                        <p *ngIf="isCouponValid" class="text-success">
+                          Coupon code applied successfully.
+                        </p>
+                        <p
+                          *ngIf="!isCouponValid && couponData"
+                          class="text-danger"
+                        >
+                          Coupon code has expired.
+                        </p>
+                        <p
+                          *ngIf="!isCouponValid && !couponData"
+                          class="text-danger"
+                        >
+                          Coupon code is not valid.
+                        </p>
+                      </ng-container>
+                    </div>
+
+                    <div class="d-flex justify-content-between mb-5">
+                      <a
+                        class="btn btn-primary text-uppercase w-100"
+                        [routerLink]="checkAuth"
+                      >
+                        Place Order
+                      </a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</ng-container>
+<ng-template #cartItemShow>
+  <div class="container my-5">
+    <div class="row">
+      <div class="col-12">
+        <div class="card p-5 text-center">
+          <img
+            class="card-img-top w-25 mx-auto"
+            src="https://rukminim2.flixcart.com/www/800/800/promos/16/05/2019/d438a32e-765a-4d8b-b4a6-520b560971e8.png?q=90"
+            alt="Card image cap"
+          />
+          <ng-container *ngIf="isLoggedIn$ | async; else logoutShow">
+            <div class="card-body">
+              <h5 class="card-title">Your cart is empty!</h5>
+              <p class="card-text">Add items to it now.</p>
+              <a class="btn btn-primary" routerLink="/category">Shop Now</a>
+            </div>
+          </ng-container>
+          <ng-template #logoutShow>
+            <div class="card-body">
+              <h5 class="card-title">Missing Cart items?</h5>
+              <p class="card-text">
+                Login to see the items you added previously
+              </p>
+              <a class="btn btn-primary" routerLink="/login">Login</a>
+            </div>
+          </ng-template>
+        </div>
+      </div>
+    </div>
+  </div>
+</ng-template>

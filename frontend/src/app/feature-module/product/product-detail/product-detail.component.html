@@ -1,0 +1,71 @@
+<section class="py-5" *ngIf="product">
+  <div class="container px-4 px-lg-5 my-5">
+    <div class="row gx-4 gx-lg-5 align-items-center">
+      <div class="col-md-4">
+        <img
+          class="card-img-top mb-5 mb-md-0"
+          [src]="'http://localhost:4000/uploads/' + product.image + '.jpeg'"
+          alt="..."
+        />
+      </div>
+      <div class="col-md-8">
+        <!-- <div class="small mb-1">SKU: BST-498</div> -->
+        <h1 class="display-5 fw-bolder">{{ product.name }}</h1>
+        <div class="fs-5 mb-5">
+          <ng-container *ngIf="hasSpecialPrice(product); else hasSpecial">
+            <ng-container *ngIf="hasFixedPrice(product)">
+              <h4>{{ product.specialPrice }}.00 INR</h4>
+            </ng-container>
+            <ng-container *ngIf="!hasFixedPrice(product)">
+              <h4>
+                {{
+                  calculateDiscountedPrice(product.price, product.specialPrice)
+                }}.00 INR
+              </h4>
+            </ng-container>
+          </ng-container>
+          <ng-template #hasSpecial>
+            <h4>{{ product.price }}.00 INR</h4>
+          </ng-template>
+        </div>
+        <p class="lead">
+          {{ product.discription }}
+        </p>
+        <div class="row">
+          <div class="col-md-4" *ngFor="let attribute of productAttributes">
+            <app-select-dropdown
+              [attribute]="attribute"
+              (setAttributeSelected)="onAttributeChange($event)"
+            ></app-select-dropdown>
+          </div>
+          <div class="col-md-4">
+            <input
+              type="number"
+              min="1"
+              [max]="product.stock"
+              name="quantity"
+              id="quantity"
+              [(ngModel)]="quantity"
+              class="form-control form-control-sm"
+            />
+            <p *ngIf="quantity === product.stock">
+              Maximam {{ quantity }} product is available.
+            </p>
+          </div>
+          <div class="col-md-4 mt-5">
+            <button class="btn btn-primary p-2" (click)="addToCart(product)">
+              Add to Cart
+            </button>
+            <button
+              *ngIf="isItemExists(product)"
+              routerLink="/cart"
+              class="btn btn-outline-primary ms-3 p-2"
+            >
+              Go to Cart
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

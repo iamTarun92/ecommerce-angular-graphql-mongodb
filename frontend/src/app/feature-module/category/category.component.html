@@ -1,0 +1,28 @@
+<section *ngIf="categories">
+  <div class="container py-5 text-center">
+    <h4 class="mt-4 mb-5"><strong>All Categories</strong></h4>
+
+    <div class="row">
+      <div class="col-lg-3 col-md-12 mb-4" *ngFor="let category of categories">
+        <div class="card border-0">
+          <a [routerLink]="'/' + category.name + '/' + category._id">
+            <img
+              class="w-100 mx-auto"
+              [src]="baseUrl + category.image + '.jpg'"
+            />
+          </a>
+          <div class="card-body">
+            <a
+              [routerLink]="category.name.toLowerCase() + '/' + category._id"
+              class="text-reset"
+            >
+              <h5 class="card-title mb-3 text-uppercase">
+                {{ category.name }}
+              </h5>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
