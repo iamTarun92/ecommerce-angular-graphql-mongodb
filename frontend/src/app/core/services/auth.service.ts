@@ -73,6 +73,6 @@ export class AuthService {
     localStorage.setItem('session_token', token);
     localStorage.setItem('authenticated', 'true');
     this.isLoggedInSubject.next(true);
-    this.router.navigate(['product'])
+    this.router.navigate(['category'])
   }
 }
