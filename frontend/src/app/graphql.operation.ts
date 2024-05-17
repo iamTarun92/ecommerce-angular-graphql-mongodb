@@ -1,7 +1,7 @@
 import { gql } from 'apollo-angular';
 
 
-const CategoriesQuery = gql`
+const GET_CATEGORIES_QUERY = gql`
 query getCategories {
   getCategories {
     _id
@@ -16,7 +16,7 @@ query getProducts {
   getProducts {
     _id
       name
-      discription
+      description
       price
       specialPrice
       isFixedPrice
@@ -35,12 +35,12 @@ query getProducts {
 }
 `
 
-const GET_PRODUCT_BY_ID = gql`
+const GET_PRODUCT_BY_ID_QUERY = gql`
   query GetProductById($productId: ID!) {
     getProductById(productId: $productId) {
       _id
       name
-      discription
+      description
       price
       specialPrice
       isFixedPrice
@@ -57,7 +57,7 @@ const GET_PRODUCT_BY_ID = gql`
     }
   }
 `
-const SignUp = gql`
+const Sign_UP_QUERY = gql`
 mutation SignUp($username:String!, $email: String!, $password: String!) {
   signUp(newUser: { username:$username, email: $email, password: $password }) {
     username
@@ -66,9 +66,13 @@ mutation SignUp($username:String!, $email: String!, $password: String!) {
   }
 }
 `
-const SignIn = gql`
-mutation SignIn($email: String!, $password: String!) {
+const Sign_In_QUERY = gql`
+query SignIn($email: String!, $password: String!) {
   signIn(newUser: { email: $email, password: $password }) {
+    user {
+      username
+      email
+    }
     token
   }
 }
@@ -102,20 +106,65 @@ const GET_COUPON_BY_CODE = gql`
   }
 `;
 
-const GET_COUPONS = gql`
-query GetCoupons {
-  getCoupons {
+const GET_WISHLIST_QUERY = gql`
+query GetWishlists($email: String!) {
+  getWishlists(email: $email) {
     _id
-    code
-    discount
-    startDate
-    endDate
-    minOrder
-    isFixed
+    email
+    productId {
+      _id
+      name
+      description
+      price
+      specialPrice
+      isFixedPrice
+      stock
+      image
+      categoryId
+    }
   }
 }
-`;
+`
+
+const ADD_WISHLIST_QUERY = gql`
+mutation AddWishlist($email: String, $productId: String) {
+  addWishlist(email: $email, productId: $productId) {
+    _id
+    email
+    productId {
+      _id
+      name
+      description
+      price
+      specialPrice
+      isFixedPrice
+      stock
+      image
+      categoryId
+    }
+  }
+}
+`
+
+const DELETE_WISHLIST_QUERY = gql`
+mutation DeleteWishlist($id: ID!) {
+  deleteWishlist(id: $id) {
+    _id
+    email
+    productId {
+      _id
+      name
+      description
+      price
+      specialPrice
+      isFixedPrice
+      stock
+      image
+      categoryId
+    }
+  }
+}
+`
 
 
-
-export { ProductQuery, GET_PRODUCT_BY_ID, SignUp, SignIn, CategoriesQuery, GetCouponByCodeQuery, GET_COUPON_BY_CODE, GET_COUPONS }
+export { ProductQuery, GET_PRODUCT_BY_ID_QUERY, Sign_UP_QUERY, Sign_In_QUERY, GET_CATEGORIES_QUERY, GetCouponByCodeQuery, GET_COUPON_BY_CODE, GET_WISHLIST_QUERY, ADD_WISHLIST_QUERY, DELETE_WISHLIST_QUERY }

@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { AuthService } from 'src/app/core/core.index';
+import { SignInResponse } from 'src/app/core/models/user';
 
 @Component({
   selector: 'app-login',
@@ -26,10 +27,11 @@ export class LoginComponent implements OnInit {
     const { email, password } = this.loginForm.value;
 
     this.authService.login(email, password).subscribe({
-      next: (response) => {
+      next: (response: SignInResponse) => {
+        this.authService.setLocalStorage(response)
         this.loginForm.reset()
       },
-      error: (error) => alert('Error: ' + error.error.error.message)
+      error: (error) => alert('Error: ' + error)
     })
   }
 }

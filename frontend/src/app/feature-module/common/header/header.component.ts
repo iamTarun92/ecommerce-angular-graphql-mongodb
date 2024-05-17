@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { Observable } from 'rxjs';
-import { CartService, AuthService } from 'src/app/core/core.index';
+import { CartService, AuthService, WishlistService } from 'src/app/core/core.index';
 
 @Component({
   selector: 'app-header',
@@ -10,12 +10,15 @@ import { CartService, AuthService } from 'src/app/core/core.index';
 })
 export class HeaderComponent implements OnInit {
   cartData: any;
-  wishListCount!: number
+  wishListCount = 0
   isLoggedIn$!: Observable<boolean>;
+  currentUser: any
+
 
   constructor(
     private cartService: CartService,
     private authService: AuthService,
+    private wishlistService: WishlistService,
     private router: Router
   ) {
     cartService.loadCart()
@@ -29,9 +32,23 @@ export class HeaderComponent implements OnInit {
 
   ngOnInit() {
     this.isLoggedIn$ = this.authService.isLoggedIn();
+    this.currentUser = JSON.parse(this.authService.getCurrentUser() || '{}')
+    this.wishlistService.wishListCount.subscribe((res) => this.wishListCount = res)
+    this.loadWishLists()
+  }
+  loadWishLists() {
+    this.wishlistService.getWishlists(this.currentUser.email).subscribe({
+      next: (response) => {
+        this.wishlistService.wishListCount.next(response.length)
+      },
+      error: (error) => {
+        console.log(error)
+      }
+    })
   }
 
   logOut() {
     this.authService.logout()
+    this.router.navigate(['category'])
   }
 }

@@ -67,6 +67,26 @@
                 <a [routerLink]="setUrl(product)"
                   ><i class="bi bi-bag-dash fs-4 text-black"></i
                 ></a>
+                <ng-container
+                  *ngIf="
+                    isWishItemExists(product);
+                    else show_add_wishlist_button
+                  "
+                >
+                  <a class="btn" routerLink="/wishlist">
+                    <i class="bi bi-heart-fill text-danger fs-4"></i>
+                  </a>
+                </ng-container>
+                <ng-template #show_add_wishlist_button>
+                  <button class="btn">
+                    <i
+                      class="bi bi-heart text-danger fs-4"
+                      (click)="
+                        addToWishList(currentUser.email, product._id)
+                      "
+                    ></i>
+                  </button>
+                </ng-template>
               </div>
             </div>
           </div>

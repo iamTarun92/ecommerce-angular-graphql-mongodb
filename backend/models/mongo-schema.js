@@ -101,7 +101,7 @@ const categorySchema = new mongoose.Schema({
 
 const productSchema = new mongoose.Schema({
   name: String,
-  discription: String,
+  description: String,
   price: Number,
   specialPrice: Number,
   isFixedPrice: Boolean,
@@ -144,6 +144,18 @@ const couponSchema = new mongoose.Schema(
   }
 );
 
+const wishlistSchema = new mongoose.Schema({
+  email: {
+    type: String,
+    required: true,
+  },
+  productId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Product",
+    required: false,
+  },
+});
+
 const Student = mongoose.model("Student", studentSchema);
 const Department = mongoose.model("Department", departmentSchema);
 const Subject = mongoose.model("Subject", subjectSchema);
@@ -154,6 +166,7 @@ const Post = mongoose.model("Post", postSchema);
 const Product = mongoose.model("Product", productSchema);
 const Category = mongoose.model("Category", categorySchema);
 const Coupon = mongoose.model("Coupon", couponSchema);
+const Wishlist = mongoose.model("Wishlist", wishlistSchema);
 
 export {
   Student,
@@ -166,4 +179,5 @@ export {
   Product,
   Category,
   Coupon,
+  Wishlist,
 };

@@ -2,8 +2,9 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { Apollo, gql } from 'apollo-angular';
-import { BehaviorSubject, Observable, tap } from 'rxjs';
-import { SignIn, SignUp } from 'src/app/graphql.operation';
+import { BehaviorSubject, Observable, map, tap } from 'rxjs';
+import { Sign_In_QUERY, Sign_UP_QUERY } from 'src/app/graphql.operation';
+import { SignInResponse } from '../models/user';
 
 
 @Injectable({
@@ -11,7 +12,6 @@ import { SignIn, SignUp } from 'src/app/graphql.operation';
 })
 export class AuthService {
 
-  private baseUrl = 'http://localhost:1337/api';
   private isLoggedInSubject: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(localStorage.getItem('authenticated') ? true : false);
   private currentuser: BehaviorSubject<string> = new BehaviorSubject<string>(localStorage.getItem('user') || '');
 
@@ -24,31 +24,28 @@ export class AuthService {
   }
 
 
-  login(email: string, password: string) {
-    return this.apollo.mutate({
-      mutation: SignIn,
+  login(email: string, password: string): Observable<SignInResponse> {
+    return this.apollo.watchQuery<{ signIn: SignInResponse }>({
+      query: Sign_In_QUERY,
       variables: {
         email,
         password,
       },
-    }).pipe(
-      tap((response: any) => {
-        const { data: { signIn: { token } } } = response;
-        this.setLocalStorage(token)
-      })
-    );
+    }).valueChanges.pipe(map((result: any) => {
+      return result.data.signIn
+    }));
   }
 
   logout(): void {
     localStorage.removeItem('session_token');
     localStorage.removeItem('authenticated');
+    localStorage.removeItem('user');
     this.isLoggedInSubject.next(false);
-    this.router.navigate(['login'])
   }
 
   signup(username: string, email: string, password: string): Observable<any> {
     return this.apollo.mutate({
-      mutation: SignUp,
+      mutation: Sign_UP_QUERY,
       variables: {
         username,
         email,
@@ -69,9 +66,10 @@ export class AuthService {
     return localStorage.getItem('user');
   }
 
-  setLocalStorage(token: any) {
-    localStorage.setItem('session_token', token);
+  setLocalStorage(res: any) {
+    localStorage.setItem('session_token', res.token);
     localStorage.setItem('authenticated', 'true');
+    localStorage.setItem('user', JSON.stringify(res.user));
     this.isLoggedInSubject.next(true);
     this.router.navigate(['category'])
   }

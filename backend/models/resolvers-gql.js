@@ -9,6 +9,7 @@ import {
   Product,
   Category,
   Coupon,
+  Wishlist,
 } from "./mongo-schema.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
@@ -23,6 +24,10 @@ const resolvers = {
   Post: {
     author: async (post) => await User.findOne({ _id: post.author }),
   },
+  Wishlist: {
+    productId: async (product) =>
+      await Product.findOne({ _id: product.productId }),
+  },
   Mark: {
     student_id: async (mark) => await Student.findOne({ _id: mark.student_id }),
     exam_id: async (mark) => await Exam.findOne({ _id: mark.exam_id }),
@@ -30,8 +35,12 @@ const resolvers = {
   },
   Query: {
     getCategories: async () => await Category.find(),
+
     getProducts: async () => await Product.find(),
-    getProductById: async (parent, { productId }) => await Product.findById(productId),
+
+    getProductById: async (parent, { productId }) =>
+      await Product.findById(productId),
+
     getStudentByFilter: async (parent, { name, age }) => {
       let filter = {};
       if (name || age) {
@@ -45,6 +54,7 @@ const resolvers = {
       }
       return await Student.find(filter);
     },
+
     getMarkByFilter: async (parent, { student_id }) => {
       const marks = await Mark.aggregate([
         {
@@ -129,14 +139,43 @@ const resolvers = {
       ]);
       return marks;
     },
+
     getCoupons: async () => {
       return await Coupon.find();
     },
+
     getCouponById: async (parent, { id }) => {
       return await Coupon.findById(id);
     },
+
     getCouponByCode: async (parent, { code }) => {
-      return await Coupon.findOne({code});
+      return await Coupon.findOne({ code });
+    },
+
+    getWishlists: async (parent, { email }) => {
+      return await Wishlist.find({ email });
+    },
+
+    signIn: async (_, { newUser }) => {
+      try {
+        const user = await User.findOne({ email: newUser.email });
+        if (!user) {
+          throw new Error("Invalid email.");
+        }
+        const isPasswordValid = await bcrypt.compare(
+          newUser.password,
+          user.password
+        );
+        if (!isPasswordValid) {
+          throw new Error("Invalid password.");
+        }
+        const token = jwt.sign({ userId: user._id }, JWT_SECRET, {
+          expiresIn: "1h",
+        });
+        return { user, token };
+      } catch (error) {
+        throw error;
+      }
     },
   },
   Mutation: {
@@ -161,51 +200,38 @@ const resolvers = {
         throw error;
       }
     },
-    signIn: async (_, { newUser }) => {
+
+    addPost: async (parent, { post }, { userId }) => {
       try {
-        const user = await User.findOne({ email: newUser.email });
-        if (!user) {
-          throw new Error("Invalid email.");
+        if (!userId) {
+          throw new Error("Authentication required");
         }
-        const isPasswordValid = await bcrypt.compare(
-          newUser.password,
-          user.password
-        );
-        if (!isPasswordValid) {
-          throw new Error("Invalid password.");
-        }
-        const token = jwt.sign({ userId: user._id }, JWT_SECRET, {
-          expiresIn: "1h",
-        });
-        return { token };
+
+        const newPost = new Post({ ...post, author: userId });
+        await newPost.save();
+        return newPost;
       } catch (error) {
         throw error;
       }
     },
-    addPost: async (parent, { post }, { userId }) => {
-      if (!userId) {
-        throw new Error("Authentication required");
-      }
 
-      const newPost = new Post({ ...post, author: userId });
-      await newPost.save();
-      return newPost;
+    addWishlist: async (parent, { email, productId }, { userId }) => {
+      try {
+        // if (!userId) {
+        //   throw new Error("Authentication required");
+        // }
+        const newPost = new Wishlist({ email, productId });
+        await newPost.save();
+        return newPost;
+      } catch (error) {
+        throw error;
+      }
+    },
+
+    deleteWishlist: async (_, { id }) => {
+      return await Wishlist.findByIdAndDelete(id)
     },
   },
 };
 
 export default resolvers;
-
-// const createDoc = async () => {
-//   try {
-//     const data = new Student({
-//       name: "sass",
-//       age: 20,
-//     });
-
-//     const result = await data.save();
-//     console.log(result);
-//   } catch (error) {
-//     console.log(error);
-//   }
-// };

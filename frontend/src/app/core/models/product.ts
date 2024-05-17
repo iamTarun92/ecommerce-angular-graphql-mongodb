@@ -2,7 +2,7 @@
 export interface ProductRoot {
     _id: string
     name: string
-    discription: string
+    description: string
     price: number
     specialPrice: number
     isFixedPrice: boolean

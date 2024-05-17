@@ -1,5 +1,6 @@
 const typeDefs = `#graphql
     type Query {
+      signIn(newUser:SigninInput!):Token
       getCategories:[Category]
       getProducts:[Product]
       getProductById(productId:ID!):Product
@@ -8,13 +9,16 @@ const typeDefs = `#graphql
       getCoupons: [Coupon]
       getCouponById(id: ID!): Coupon
       getCouponByCode(code: String!): Coupon
+      getWishlists(email: String!): [Wishlist]
     }
+
     type Mutation {
       signUp(newUser:SignUpInput!):User
-      signIn(newUser:SigninInput!):Token
       addPost(post: PostInput!):Post
+      addWishlist(email:String,productId:String):Wishlist
+      deleteWishlist(id: ID!): Wishlist
     }
-   
+
     type Category {
       _id:ID
       name: String
@@ -24,7 +28,7 @@ const typeDefs = `#graphql
     type Product {
       _id:ID
       name: String
-      discription: String
+      description: String
       price: Int
       specialPrice: Int
       isFixedPrice: Boolean
@@ -44,6 +48,7 @@ const typeDefs = `#graphql
       price: Int
       description: String
     }
+
     type Student {
       _id:ID
       name:String
@@ -51,14 +56,17 @@ const typeDefs = `#graphql
       gender:Gender
       dep_id:Department
     }
+    
     enum Gender {
       Male
       Female
     }
+    
     type Department {
       _id:ID
       name:String
     }     
+    
     type Mark {
       _id:ID
       student_id:Student
@@ -66,6 +74,7 @@ const typeDefs = `#graphql
       subject_id:Subject
       mark:Int
     }
+    
     type MarkFilterResult {
       _id:ID
       subjects:[Subject]
@@ -73,38 +82,46 @@ const typeDefs = `#graphql
       exams:[Exam]
       mark:Int
     }
+    
     type Exam {
       _id:ID
       name:String
     } 
+    
     type Subject {
       _id:ID
       name:String
     }
+    
     type User {
       _id:ID!
       username:String!
       email:String!
-      password:String!
     }
+    
     type Post {
       _id:ID!
       title:String!
       content:String!
       author:User!
     }
+    
     type Token {
-      token:String
+      user:User!
+      token:String!
     }
+    
     input SignUpInput{
       username:String!
       email:String!
       password:String!
     }
+    
     input SigninInput{
       email:String!
       password:String!
     }
+    
     input PostInput {
       title: String!
       content: String!
@@ -118,6 +135,12 @@ const typeDefs = `#graphql
       endDate: String!
       minOrder: Float
       isFixed: Boolean!
+    }
+
+    type Wishlist {
+      _id: ID!
+      email: String!
+      productId: Product!
     }
   `;
 

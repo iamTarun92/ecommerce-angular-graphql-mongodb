@@ -64,13 +64,12 @@
           >
           <ng-template #showLogout>
             <div class="dropdown">
-              <a
+              <button
                 class="btn btn-outline-primary mx-2 text-uppercase"
-                routerLink=""
                 data-bs-toggle="dropdown"
-                ><i class="bi bi-person"></i> Account</a
+                ><i class="bi bi-person"></i> Account</button
               >
-              <ul class="dropdown-menu" *ngIf="isLoggedIn$ | async">
+              <ul class="dropdown-menu">
                 <li>
                   <a
                     class="dropdown-item align-items-center d-flex justify-content-between"
@@ -87,10 +86,7 @@
                     class="dropdown-item align-items-center d-flex justify-content-between"
                     routerLink="orders"
                   >
-                    Orders
-                    <span class="count position-relative">{{
-                      wishListCount
-                    }}</span></a
+                    Orders</a
                   >
                 </li>
                 <li>
