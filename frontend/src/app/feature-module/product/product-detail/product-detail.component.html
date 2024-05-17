@@ -52,17 +52,38 @@
               Maximam {{ quantity }} product is available.
             </p>
           </div>
-          <div class="col-md-4 mt-5">
-            <button class="btn btn-primary p-2" (click)="addToCart(product)">
+          <div class="mt-5 d-flex gap-2">
+            <button class="btn btn-primary" (click)="addToCart(product)">
               Add to Cart
             </button>
             <button
-              *ngIf="isItemExists(product)"
+              *ngIf="isItemExistsInCart(product)"
               routerLink="/cart"
-              class="btn btn-outline-primary ms-3 p-2"
+              class="btn btn-outline-primary ms-3"
             >
               Go to Cart
             </button>
+            <ng-container
+              *ngIf="
+                isItemExistsInWishlist(product);
+                else show_add_wishlist_button
+              "
+            >
+              <a
+                class="btn btn-outline-danger bi-heart-fill"
+                routerLink="/wishlist"
+              >
+                Remove
+              </a>
+            </ng-container>
+            <ng-template #show_add_wishlist_button>
+              <button
+                class="btn btn-outline-danger bi-heart"
+                (click)="addToWishList(currentUser.email, product._id)"
+              >
+                Wishlist
+              </button>
+            </ng-template>
           </div>
         </div>
       </div>

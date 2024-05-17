@@ -1,9 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Observable } from 'rxjs';
 import { Attribute, ProductRoot } from 'src/app/core/models/product';
-import { CartService } from 'src/app/core/services/cart.service';
-import { CommonService } from 'src/app/core/services/common.service';
+import { AuthService, CartService, CommonService, WishlistService } from 'src/app/core/core.index';
 
 @Component({
   selector: 'app-product-detail',
@@ -20,14 +19,23 @@ export class ProductDetailComponent implements OnInit {
   basicPrice = 0
   specialBasicPrice = 0
   selectedPrice = 0
+  wishListItems: any
+  currentUser: any
+
+
 
   constructor(
     private activeRoute: ActivatedRoute,
     private commonService: CommonService,
-    private cartService: CartService
+    private cartService: CartService,
+    private wishlistService: WishlistService,
+    private authService: AuthService,
+    private router: Router,
+
   ) { }
 
   ngOnInit(): void {
+    this.currentUser = JSON.parse(this.authService.getCurrentUser() || '{}')
     this.productId = this.activeRoute.snapshot.params['productId']
     this.loadProductById(this.productId)
   }
@@ -41,6 +49,9 @@ export class ProductDetailComponent implements OnInit {
         this.specialBasicPrice = this.product.specialPrice
         if (this.cartService.getCartItems()) {
           this.updateItemQty(this.cartService.getCartItems(), this.product)
+        }
+        if (this.currentUser.email) {
+          this.loadWishLists()
         }
       },
       error: (error) => {
@@ -56,8 +67,12 @@ export class ProductDetailComponent implements OnInit {
     this.cartService.addItemToCart(productToAdd)
   }
 
-  isItemExists(product: any): boolean {
-    return this.cartService.itemInCart(product)
+  isItemExistsInCart(product: any): boolean {
+    return this.cartService.isItemExistsInCart(product)
+  }
+
+  isItemExistsInWishlist(product: any): boolean {
+    return this.wishListItems?.findIndex((item: any) => item.productId._id === product._id) > -1;
   }
 
   onAttributeChange(priceAttribute: any) {
@@ -111,5 +126,34 @@ export class ProductDetailComponent implements OnInit {
 
   calculateDiscountedPrice(originalPrice: number, discountPercentage: number): number {
     return this.cartService.calculateDiscountedPrice(originalPrice, discountPercentage)
+  }
+
+  loadWishLists() {
+    this.wishlistService.getWishlists(this.currentUser.email).subscribe({
+      next: (response) => {
+        this.wishListItems = response
+        this.wishlistService.wishListCount.next(response.length)
+      },
+      error: (error) => {
+        console.log(error)
+      }
+    })
+  }
+
+  addToWishList(email: string, productId: string) {
+    if (this.authService.getToken()) {
+      this.wishlistService.addToWishlist(email, productId).subscribe({
+        next: (res) => {
+          alert('Product added.')
+          this.loadWishLists()
+        },
+        error: (error) => {
+          console.warn(error);
+        }
+      })
+    } else {
+      this.router.navigate(['/login']);
+    }
+
   }
 }

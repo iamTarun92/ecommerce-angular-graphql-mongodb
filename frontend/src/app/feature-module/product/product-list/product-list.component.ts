@@ -40,7 +40,7 @@ export class ProductListComponent implements OnInit {
   }
 
   setUrl(product: any) {
-    return product.name.toLocaleLowerCase() + '/' + product._id.toString()
+    return product.name + '/' + product._id
   }
 
   hasFixedPrice(product: ProductRoot): boolean {
@@ -67,7 +67,7 @@ export class ProductListComponent implements OnInit {
     })
   }
 
-  isWishItemExists(product: any): boolean {
+  isItemExistsInWishlist(product: any): boolean {
     return this.wishListItems?.findIndex((item: any) => item.productId._id === product._id) > -1;
   }
 
@@ -85,6 +85,5 @@ export class ProductListComponent implements OnInit {
     } else {
       this.router.navigate(['/login']);
     }
-
   }
 }

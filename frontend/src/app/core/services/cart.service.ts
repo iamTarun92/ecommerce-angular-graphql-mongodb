@@ -54,7 +54,7 @@ export class CartService {
         localStorage.removeItem(key);
     }
 
-    itemInCart(item: any): boolean {
+    isItemExistsInCart(item: any): boolean {
         return this.cartItems.findIndex(o => o._id === item._id) > -1;
     }
 
