@@ -9,6 +9,12 @@ type Attribute {
   options: [Option]
 }
 
+type Attribute2 {
+  name: String
+  price: Float
+  value: String
+}
+
 type Product {
   _id: ID
   name: String
@@ -21,7 +27,7 @@ type Product {
   attributes: [Attribute]
   categoryId: Category
   quantity: Int
-  selectedAttributes: [String]
+  selectedAttributes: [Attribute2]
 }
 
 type Address {
@@ -37,21 +43,23 @@ type Address {
   fullName: String!
 }
 
-type Order {
-  _id: ID!
-  email: String!
-  orderId: String!
-  paymentMethod: String!
-  products: [Product]
-  address: AddressWrapper
-  name: String!
-  transactionId: String!
-  amount: Float!
-}
-
 type AddressWrapper {
   billing: Address
   delivery: Address
+}
+
+type Order {
+  _id: ID!
+  email: String
+  orderId: String
+  paymentMethod: String
+  products: [Product]
+  address: AddressWrapper
+  name: String!
+  transactionId: String
+  amount: Float
+  orderStatus: String
+  paymentStatus: String
 }
 
 type Category {

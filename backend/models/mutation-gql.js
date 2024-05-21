@@ -78,8 +78,10 @@ const Mutation = {
       name,
       transactionId,
       amount,
+      orderStatus,
+      paymentStatus,
     } = newOrder;
-    
+
     const order = new Order({
       email,
       orderId,
@@ -89,6 +91,8 @@ const Mutation = {
       name,
       transactionId,
       amount,
+      orderStatus,
+      paymentStatus,
     });
     await order.save();
     return order;

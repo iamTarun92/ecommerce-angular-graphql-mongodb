@@ -128,8 +128,14 @@ const categorySchema = new Schema({
   image: String,
 });
 
+const attributeSchema2 = new Schema({
+  name: String,
+  price: Number,
+  value: String,
+});
+
 const productSchema = new Schema({
-  _id: String,
+  _id: mongoose.Schema.Types.ObjectId,
   name: String,
   description: String,
   price: Number,
@@ -144,7 +150,7 @@ const productSchema = new Schema({
     required: false,
   },
   quantity: Number,
-  selectedAttributes: [String],
+  selectedAttributes: [attributeSchema2],
 });
 
 const couponSchema = new Schema(
@@ -204,6 +210,8 @@ const orderSchema = new Schema({
   name: String,
   transactionId: String,
   amount: Number,
+  orderStatus: String,
+  paymentStatus: String,
 });
 
 const Student = mongoose.model("Student", studentSchema);

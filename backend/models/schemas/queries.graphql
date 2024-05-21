@@ -2,7 +2,7 @@ type Query {
   signIn(newUser: SigninInput!): Token
   getCategories: [Category]
   getProducts: [Product]
-  getProductById(productId: ID!): Product
+  getProductById(id: ID!): Product
   getStudentByFilter(name: String, age: Int): [Student]
   getMarkByFilter(student_id: ID!): [MarkFilterResult]
   getCoupons: [Coupon]
@@ -11,4 +11,6 @@ type Query {
   getWishlists(email: String!): [Wishlist]
   getAddressByEmail(email: String!): [Address]
   getOrders: [Order]
+  getOrdersByEmail(email: String!): [Order]
+  getOrderByOrderId(orderId: String!): Order
 }

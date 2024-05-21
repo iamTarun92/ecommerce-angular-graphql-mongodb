@@ -15,6 +15,9 @@ input OrderInput {
   name: String
   transactionId: String
   amount: Float
+  orderStatus: String
+  paymentStatus: String
+  couponId: String
 }
 
 input OptionInput {
@@ -28,6 +31,12 @@ input AttributeInput {
   options: [OptionInput]
 }
 
+input selectedAttributeInout {
+  name: String
+  price: Float
+  value: String
+}
+
 input ProductInput {
   _id: String
   name: String
@@ -39,7 +48,7 @@ input ProductInput {
   image: String
   attributes: [AttributeInput]
   quantity: Int
-  selectedAttributes: [String]
+  selectedAttributes: [selectedAttributeInout]
 }
 
 input AddressInput {

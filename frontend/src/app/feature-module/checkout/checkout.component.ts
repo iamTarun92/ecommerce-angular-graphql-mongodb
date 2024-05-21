@@ -201,10 +201,21 @@ export class CheckoutComponent implements OnInit {
       "name": this.billingAddress.fullName,
       "transactionId": transactionId.toString(),
       "amount": this.ItemTotalPrice,
-      "couponId": this.couponId?.toString()
+      "couponId": this.couponId?.toString(),
+      "orderStatus": "Processing",
+      "paymentStatus": "Pending"
+
     }
-    this.orderService.addOrder(orderData).subscribe(response => {
-      console.log('Order placed successfully', response);
-    });
+    console.log(orderData);
+    this.orderService.addOrder(orderData).subscribe({
+      next: (response) => {
+        alert("Order placed successfully")
+        localStorage.removeItem('cartItems')
+        localStorage.removeItem('couponCode')
+        this.cartService.loadCart()
+        this.router.navigate(['orders'])
+      },
+      error: (error) => alert('Error: ' + error.error.error.message)
+    })
   }
 }

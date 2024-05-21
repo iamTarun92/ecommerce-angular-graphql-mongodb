@@ -24,11 +24,11 @@ export class CommonService {
       .pipe(map(result => result));
   }
 
-  getProductById(productId: string): Observable<ProductRoot> {
+  getProductById(id: string): Observable<ProductRoot> {
     return this.apollo.query<{ getProductById: ProductRoot }>({
       query: GET_PRODUCT_BY_ID_QUERY,
       variables: {
-        productId
+        id
       },
     }).pipe(map(result => result.data.getProductById));;
   }

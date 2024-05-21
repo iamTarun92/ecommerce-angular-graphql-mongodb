@@ -1,0 +1,46 @@
+<section *ngIf="allOrder">
+  <div class="container py-5">
+    <div class="row">
+      <div class="col-12">
+        <table class="table">
+          <thead class="table-dark">
+            <tr>
+              <th scope="col">Name</th>
+              <th scope="col">Order Id</th>
+              <th scope="col">Transaction Id</th>
+              <th scope="col">Payment Status</th>
+              <th scope="col">Order Status</th>
+              <th scope="col">Date</th>
+              <th scope="col">Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let order of allOrder">
+              <td>{{ order.name }}</td>
+              <td>{{ order.orderId }}</td>
+              <td>{{ order.transactionId }}</td>
+              <td class="text-capitalize">
+                {{ order.paymentStatus }}
+              </td>
+              <td class="text-capitalize">
+                {{ order.orderStatus }}
+              </td>
+              <td class="text-uppercase">{{ order.orderDate }}</td>
+              <td>
+                <a
+                  class="btn btn-dark"
+                  routerLink="order_details"
+                  [queryParams]="{ order_id: order.orderId }"
+                  >Details</a
+                >
+              </td>
+            </tr>
+            <tr *ngIf="!allOrder.length">
+              <td class="text-danger border-0 fs-5" colspan="7">No data Found</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</section>

@@ -22,8 +22,9 @@ const Query = {
 
   getProducts: async () => await Product.find(),
 
-  getProductById: async (parent, { productId }) =>
-    await Product.findById(productId),
+  getProductById: async (parent, { id }) => {
+    return await Product.findById(id);
+  },
 
   getStudentByFilter: async (parent, { name, age }) => {
     let filter = {};
@@ -146,14 +147,12 @@ const Query = {
 
   signIn: async (_, { newUser }) => {
     try {
-      const user = await User.findOne({ email: newUser.email });
+      const { email, password } = newUser;
+      const user = await User.findOne({ email });
       if (!user) {
         throw new Error("Invalid email.");
       }
-      const isPasswordValid = await bcrypt.compare(
-        newUser.password,
-        user.password
-      );
+      const isPasswordValid = await bcrypt.compare(password, user.password);
       if (!isPasswordValid) {
         throw new Error("Invalid password.");
       }
@@ -168,6 +167,14 @@ const Query = {
 
   getOrders: async () => {
     return await Order.find();
+  },
+
+  getOrdersByEmail: async (parent, { email }) => {
+    return await Order.find({ email });
+  },
+
+  getOrderByOrderId: async (parent, { orderId }) => {
+    return await Order.findOne({ orderId });
   },
 };
 

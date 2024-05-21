@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { FeatureModuleComponent } from './feature-module.component';
 import { LoggedInGuard } from '../core/guards/logged-in.guard';
+import { AuthGuard } from '../core/guards/auth/auth.guard';
 
 const routes: Routes = [
   {
@@ -25,6 +26,11 @@ const routes: Routes = [
         loadChildren: () => import('./checkout/checkout.module').then(m => m.CheckoutModule)
       },
       {
+        path: 'orders',
+        canActivate: [AuthGuard],
+        loadChildren: () => import('./order/order.module').then(m => m.OrderModule)
+      },
+      {
         path: 'wishlist',
         loadChildren: () => import('./wishlist/wishlist.module').then(m => m.WishlistModule)
       },
@@ -32,7 +38,7 @@ const routes: Routes = [
         path: ':categoryName',
         loadChildren: () => import('./product/product.module').then(m => m.ProductModule)
       },
-      
+
     ]
   },
 ];

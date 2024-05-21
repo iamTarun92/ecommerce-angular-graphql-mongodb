@@ -1,0 +1,116 @@
+<section class="h-100 gradient-custom" *ngIf="allOrder">
+  <div class="container py-5 h-100">
+    <div class="row d-flex justify-content-center align-items-center h-100">
+      <div class="col-lg-10 col-xl-8">
+        <div class="card" style="border-radius: 10px">
+          <div class="card-header px-4 py-5">
+            <h5 class="text-muted mb-0">
+              Thanks for your Order,
+              <span style="color: #a8729a">{{ currentUser.username }}</span
+              >!
+            </h5>
+          </div>
+          <div class="card-body p-4">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+              <p class="lead fw-normal mb-0" style="color: #a8729a">Receipt</p>
+              <p class="small text-muted mb-0">
+                Order Id : {{ allOrder.orderId }}
+              </p>
+              <p class="small text-muted mb-0">
+                Transaction Id : {{ allOrder.transactionId }}
+              </p>
+            </div>
+            <ng-container *ngFor="let order of allOrder">
+              <div
+                class="card shadow-0 border mb-4"
+                *ngFor="let product of order.attributes.products"
+              >
+                <div class="card-body">
+                  <div class="row">
+                    <div class="col-md-2">
+                      <img
+                        [src]="
+                          'http://localhost:1337' +
+                          product.attributes.image.data.attributes.url
+                        "
+                        width="50"
+                        alt="Phone"
+                      />
+                    </div>
+                    <div
+                      class="col-md-3 text-center d-flex justify-content-center align-items-center"
+                    >
+                      <p class="text-muted mb-0 text-uppercase">
+                        {{ product.attributes.name }}
+                      </p>
+                    </div>
+                    <div
+                      class="col-md-2 text-center d-flex justify-content-center align-items-center"
+                    >
+                      <p class="text-muted mb-0 small">
+                        Qty: {{ product.quantity }}
+                      </p>
+                    </div>
+                    <div
+                      class="align-items-center col-md-5 d-flex justify-content-end"
+                    >
+                      <ng-container
+                        *ngIf="hasSpecialPrice(product); else hasSpecial"
+                      >
+                        <ng-container *ngIf="hasFixedPrice(product)">
+                          <p class="text-muted mb-0 small">
+                            ₹{{
+                              product.quantity * product.attributes.specialPrice
+                            }}
+                          </p>
+                        </ng-container>
+                        <ng-container *ngIf="!hasFixedPrice(product)">
+                          <p class="text-muted mb-0 small">
+                            ₹{{
+                              product.quantity *
+                                calculateDiscountedPrice(
+                                  product.attributes.price,
+                                  product.attributes.specialPrice
+                                )
+                            }}
+                          </p>
+                        </ng-container>
+                      </ng-container>
+                      <ng-template #hasSpecial>
+                        <p class="text-muted mb-0 small">
+                          ₹{{ product.quantity * product.attributes.price }}
+                        </p>
+                      </ng-template>
+                    </div>
+                  </div>
+                  <div class="d-flex gap-5 justify-content-center" *ngIf="product.selectedAttributes">
+                    <div class="align-items-end d-flex gap-2" *ngFor="let attribute of product.selectedAttributes">
+                      <h6 class="text-uppercase m-0">{{ attribute.name }}:</h6>
+                      <p class="m-0">{{ attribute.value }}</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </ng-container>
+
+            <div class="d-flex justify-content-between mb-2">
+              <h5>Sub Total</h5>
+              <h5>₹ {{ subTotal }}</h5>
+            </div>
+            <div
+              class="d-flex justify-content-between text-success mb-2"
+              *ngIf="allOrder.couponId"
+            >
+              <h5>Coupon Discount</h5>
+              <h5>₹ {{ subTotal - allOrder.amount }}</h5>
+            </div>
+            <div class="d-flex justify-content-between mb-2 text-danger">
+              <h5>Order Total</h5>
+              <h5>₹ {{ allOrder.amount }}</h5>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

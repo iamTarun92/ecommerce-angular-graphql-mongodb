@@ -40,8 +40,8 @@ export class ProductDetailComponent implements OnInit {
     this.loadProductById(this.productId)
   }
 
-  loadProductById(productId: string) {
-    this.commonService.getProductById(productId).subscribe({
+  loadProductById(id: string) {
+    this.commonService.getProductById(id).subscribe({
       next: (product) => {
         this.product = product;
         this.productAttributes = this.product.attributes

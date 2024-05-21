@@ -15,33 +15,33 @@ const ProductQuery = gql`
 query getProducts {
   getProducts {
     _id
+    name
+    description
+    price
+    specialPrice
+    isFixedPrice
+    stock
+    image
+    attributes {
       name
-      description
-      price
-      specialPrice
-      isFixedPrice
-      stock
-      image
-      attributes {
-        name
-        options {
-          value
-          price
-          description
-        }
+      options {
+        value
+        price
+        description
       }
-      categoryId {
-        _id
-        name
-        image
-      }    
+    }
+    categoryId {
+      _id
+      name
+      image
+    }    
   }
 }
 `
 
 const GET_PRODUCT_BY_ID_QUERY = gql`
-  query GetProductById($productId: ID!) {
-    getProductById(productId: $productId) {
+  query GetProductById($id: ID!) {
+    getProductById(id: $id) {
       _id
       name
       description
@@ -204,9 +204,80 @@ mutation AddOrder($newOrder: OrderInput!) {
     name
     transactionId
     amount
+    orderStatus
+    paymentStatus
   }
 }
 `
 
+const Get_Orders_By_Email = gql`
+query GetOrdersByEmail($email: String!) {
+  getOrdersByEmail(email: $email) {
+    _id
+    email
+    orderId
+    paymentMethod
+    products {
+      _id
+      name
+    }
+    address {
+      billing {
+        email
+      }
+      delivery {
+        email
+      }
+    }
+    name
+    transactionId
+    amount
+    orderStatus
+    paymentStatus
+  }
+}
+`
 
-export { ProductQuery, GET_PRODUCT_BY_ID_QUERY, Sign_UP_QUERY, Sign_In_QUERY, GET_CATEGORIES_QUERY, GetCouponByCodeQuery, GET_COUPON_BY_CODE, GET_WISHLIST_QUERY, ADD_WISHLIST_QUERY, DELETE_WISHLIST_QUERY, Get_Address_By_Email_QUERY, ADD_ORDER_QUERY }
+const Get_Order_By_Order_Id = gql`
+query GetOrderByOrderId($orderId: String!) {
+  getOrderByOrderId(orderId: $orderId) {
+    _id
+    email
+    orderId
+    paymentMethod
+    products {
+      _id
+      name
+    }
+    address {
+      billing {
+        email
+      }
+      delivery {
+        email
+      }
+    }
+    name
+    transactionId
+    amount
+    orderStatus
+    paymentStatus
+  }
+}
+`
+
+export {
+  ProductQuery,
+  GET_PRODUCT_BY_ID_QUERY,
+  Sign_UP_QUERY, Sign_In_QUERY,
+  GET_CATEGORIES_QUERY,
+  GetCouponByCodeQuery,
+  GET_COUPON_BY_CODE,
+  GET_WISHLIST_QUERY,
+  ADD_WISHLIST_QUERY,
+  DELETE_WISHLIST_QUERY,
+  Get_Address_By_Email_QUERY,
+  ADD_ORDER_QUERY,
+  Get_Orders_By_Email,
+  Get_Order_By_Order_Id
+}
