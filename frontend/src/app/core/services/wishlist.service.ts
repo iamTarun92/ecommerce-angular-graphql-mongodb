@@ -4,6 +4,7 @@ import { Observable, catchError, map } from 'rxjs';
 import { BehaviorSubject } from 'rxjs';
 import { Apollo } from 'apollo-angular';
 import { ADD_WISHLIST_QUERY, GET_WISHLIST_QUERY, DELETE_WISHLIST_QUERY } from 'src/app/graphql.operation';
+import { WishlistData } from '../models/product';
 
 
 @Injectable({
@@ -17,8 +18,8 @@ export class WishlistService {
         this.wishListCount = new BehaviorSubject<number>(0);
     }
 
-    getWishlists(email: string): Observable<any> {
-        return this.apollo.watchQuery({
+    getWishlists(email: string): Observable<WishlistData[]> {
+        return this.apollo.watchQuery<{ getWishlists: WishlistData[] }>({
             query: GET_WISHLIST_QUERY,
             fetchPolicy: 'network-only',
             variables: { email },

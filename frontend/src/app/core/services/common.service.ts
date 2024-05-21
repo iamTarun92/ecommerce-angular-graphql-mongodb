@@ -1,10 +1,11 @@
 import { Injectable } from '@angular/core';
 import { Apollo } from 'apollo-angular';
 import { Observable, map } from 'rxjs';
-import { GET_CATEGORIES_QUERY, GET_COUPON_BY_CODE, ProductQuery, GET_PRODUCT_BY_ID_QUERY } from 'src/app/graphql.operation';
+import { GET_CATEGORIES_QUERY, GET_COUPON_BY_CODE, ProductQuery, GET_PRODUCT_BY_ID_QUERY, Get_Address_By_Email_QUERY } from 'src/app/graphql.operation';
 import { ProductQueryResult, ProductRoot } from '../models/product';
-import { CategoryQueryResult, CategoryRoot } from '../models/category';
+import { CategoryRoot } from '../models/category';
 import { Coupon } from '../models/coupon';
+import { AddressRoot } from '../models/user';
 
 
 @Injectable({
@@ -32,13 +33,13 @@ export class CommonService {
     }).pipe(map(result => result.data.getProductById));;
   }
 
-  getCategories(): Observable<CategoryQueryResult> {
+  getCategories(): Observable<CategoryRoot[]> {
     return this.apollo
       .watchQuery<{ getCategories: CategoryRoot[] }>({
         query: GET_CATEGORIES_QUERY
       })
       .valueChanges
-      .pipe(map(result => result));
+      .pipe(map(result => result.data.getCategories));
   }
 
   getCouponByCode(code: string): Observable<Coupon> {
@@ -46,5 +47,12 @@ export class CommonService {
       query: GET_COUPON_BY_CODE,
       variables: { code },
     }).pipe(map(result => result.data.getCouponByCode));
+  }
+
+  getAddressByEmail(email: string): Observable<AddressRoot[]> {
+    return this.apollo.query<{ getAddressByEmail: AddressRoot[] }>({
+      query: Get_Address_By_Email_QUERY,
+      variables: { email },
+    }).pipe(map(result => result.data.getAddressByEmail));
   }
 }

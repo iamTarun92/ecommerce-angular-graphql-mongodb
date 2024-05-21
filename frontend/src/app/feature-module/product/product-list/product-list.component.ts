@@ -31,7 +31,7 @@ export class ProductListComponent implements OnInit {
     this.categoryId = this.activeRoute.snapshot.params['categoryId']
     this.commonService.getProducts().subscribe((result: ProductQueryResult) => {
       this.products = result.data.getProducts;
-      this.products = this.products.filter(product => product.categoryId == this.categoryId)
+      this.products = this.products.filter(product => product.categoryId._id == this.categoryId)
       if (this.currentUser.email) {
         this.loadWishLists()
       }

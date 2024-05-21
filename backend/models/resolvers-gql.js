@@ -10,10 +10,11 @@ import {
   Category,
   Coupon,
   Wishlist,
+  Address,
+  Order,
 } from "./mongo-schema.js";
-import bcrypt from "bcrypt";
-import jwt from "jsonwebtoken";
-import { JWT_SECRET } from "../config.js";
+import Mutation from "./mutation-gql.js";
+import Query from "./query-gql.js";
 
 const resolvers = {
   Student: {
@@ -24,6 +25,10 @@ const resolvers = {
   Post: {
     author: async (post) => await User.findOne({ _id: post.author }),
   },
+  Product: {
+    categoryId: async (product) =>
+      await Category.findOne({ _id: product.categoryId }),
+  },
   Wishlist: {
     productId: async (product) =>
       await Product.findOne({ _id: product.productId }),
@@ -33,205 +38,8 @@ const resolvers = {
     exam_id: async (mark) => await Exam.findOne({ _id: mark.exam_id }),
     subject_id: async (mark) => await Subject.findOne({ _id: mark.subject_id }),
   },
-  Query: {
-    getCategories: async () => await Category.find(),
-
-    getProducts: async () => await Product.find(),
-
-    getProductById: async (parent, { productId }) =>
-      await Product.findById(productId),
-
-    getStudentByFilter: async (parent, { name, age }) => {
-      let filter = {};
-      if (name || age) {
-        filter.$and = [];
-        if (name) {
-          filter.$and.push({ name: name });
-        }
-        if (age) {
-          filter.$and.push({ age: age });
-        }
-      }
-      return await Student.find(filter);
-    },
-
-    getMarkByFilter: async (parent, { student_id }) => {
-      const marks = await Mark.aggregate([
-        {
-          $match: {
-            $expr: { student_id },
-          },
-        },
-        {
-          $lookup: {
-            from: "students",
-            localField: "student_id",
-            foreignField: "_id",
-            as: "student_id",
-          },
-        },
-        {
-          $unwind: {
-            path: "$student_id",
-          },
-        },
-        {
-          $lookup: {
-            from: "subjects",
-            localField: "subject_id",
-            foreignField: "_id",
-            as: "subject_id",
-          },
-        },
-        {
-          $unwind: {
-            path: "$subject_id",
-          },
-        },
-        {
-          $lookup: {
-            from: "exams",
-            localField: "exam_id",
-            foreignField: "_id",
-            as: "exam_id",
-          },
-        },
-        {
-          $unwind: {
-            path: "$exam_id",
-          },
-        },
-        {
-          $addFields: {
-            "subjects.mark": "$mark",
-          },
-        },
-        // Group the matched documents by exam_id._id and calculate the average mark for each group
-        {
-          $group: {
-            _id: "$exam_id._id",
-            students: {
-              $push: "$student_id",
-            },
-            subjects: {
-              $push: "$subject_id",
-            },
-            exams: {
-              $push: "$exam_id",
-            },
-            averageMark: {
-              $avg: "$mark",
-            },
-          },
-        },
-        {
-          $project: {
-            student: {
-              $first: "$students",
-            },
-            subjects: 1,
-            exams: {
-              $first: "$exams",
-            },
-            averageMark: 1,
-          },
-        },
-      ]);
-      return marks;
-    },
-
-    getCoupons: async () => {
-      return await Coupon.find();
-    },
-
-    getCouponById: async (parent, { id }) => {
-      return await Coupon.findById(id);
-    },
-
-    getCouponByCode: async (parent, { code }) => {
-      return await Coupon.findOne({ code });
-    },
-
-    getWishlists: async (parent, { email }) => {
-      return await Wishlist.find({ email });
-    },
-
-    signIn: async (_, { newUser }) => {
-      try {
-        const user = await User.findOne({ email: newUser.email });
-        if (!user) {
-          throw new Error("Invalid email.");
-        }
-        const isPasswordValid = await bcrypt.compare(
-          newUser.password,
-          user.password
-        );
-        if (!isPasswordValid) {
-          throw new Error("Invalid password.");
-        }
-        const token = jwt.sign({ userId: user._id }, JWT_SECRET, {
-          expiresIn: "1h",
-        });
-        return { user, token };
-      } catch (error) {
-        throw error;
-      }
-    },
-  },
-  Mutation: {
-    signUp: async (_, { newUser }) => {
-      try {
-        // Check if the email is already registered
-        const existingUser = await User.findOne({ email: newUser.email });
-        if (existingUser) {
-          throw new Error("Email already registered.");
-        }
-
-        // Hash the password
-        const hashedPassword = await bcrypt.hash(newUser.password, 10);
-
-        // Create a new user
-        const doc = new User({
-          ...newUser,
-          password: hashedPassword,
-        });
-        return await doc.save();
-      } catch (error) {
-        throw error;
-      }
-    },
-
-    addPost: async (parent, { post }, { userId }) => {
-      try {
-        if (!userId) {
-          throw new Error("Authentication required");
-        }
-
-        const newPost = new Post({ ...post, author: userId });
-        await newPost.save();
-        return newPost;
-      } catch (error) {
-        throw error;
-      }
-    },
-
-    addWishlist: async (parent, { email, productId }, { userId }) => {
-      try {
-        // if (!userId) {
-        //   throw new Error("Authentication required");
-        // }
-        const newPost = new Wishlist({ email, productId });
-        await newPost.save();
-        return newPost;
-      } catch (error) {
-        throw error;
-      }
-    },
-
-    deleteWishlist: async (_, { id }) => {
-      return await Wishlist.findByIdAndDelete(id)
-    },
-  },
+  Query,
+  Mutation,
 };
 
 export default resolvers;

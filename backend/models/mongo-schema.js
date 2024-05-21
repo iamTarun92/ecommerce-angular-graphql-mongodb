@@ -1,6 +1,31 @@
 import mongoose from "mongoose";
+const { Schema } = mongoose;
 
-const studentSchema = new mongoose.Schema({
+const attributeSchema = new Schema({
+  name: String,
+  options: [
+    {
+      value: String,
+      price: Number,
+      description: String,
+    },
+  ],
+});
+
+const addressSchema = new Schema({
+  _id: String,
+  email: String,
+  phone: String,
+  address: String,
+  city: String,
+  state: String,
+  zip: String,
+  primary: Boolean,
+  type: String,
+  fullName: String,
+});
+
+const studentSchema = new Schema({
   name: {
     type: String,
     required: true,
@@ -20,28 +45,28 @@ const studentSchema = new mongoose.Schema({
   },
 });
 
-const departmentSchema = new mongoose.Schema({
+const departmentSchema = new Schema({
   name: {
     type: String,
     required: true,
   },
 });
 
-const subjectSchema = new mongoose.Schema({
+const subjectSchema = new Schema({
   name: {
     type: String,
     required: true,
   },
 });
 
-const examSchema = new mongoose.Schema({
+const examSchema = new Schema({
   name: {
     type: String,
     required: true,
   },
 });
 
-const markSchema = new mongoose.Schema({
+const markSchema = new Schema({
   subject_id: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "Subject",
@@ -63,7 +88,7 @@ const markSchema = new mongoose.Schema({
   },
 });
 
-const userSchema = new mongoose.Schema({
+const userSchema = new Schema({
   username: {
     type: String,
     required: true,
@@ -76,9 +101,13 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  phone: {
+    type: String,
+    required: false,
+  },
 });
 
-const postSchema = new mongoose.Schema({
+const postSchema = new Schema({
   title: {
     type: String,
     required: true,
@@ -94,12 +123,13 @@ const postSchema = new mongoose.Schema({
   },
 });
 
-const categorySchema = new mongoose.Schema({
+const categorySchema = new Schema({
   name: String,
   image: String,
 });
 
-const productSchema = new mongoose.Schema({
+const productSchema = new Schema({
+  _id: String,
   name: String,
   description: String,
   price: Number,
@@ -107,11 +137,17 @@ const productSchema = new mongoose.Schema({
   isFixedPrice: Boolean,
   stock: Number,
   image: String,
-  attributes: Array,
-  categoryId: String,
+  attributes: [attributeSchema],
+  categoryId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Category",
+    required: false,
+  },
+  quantity: Number,
+  selectedAttributes: [String],
 });
 
-const couponSchema = new mongoose.Schema(
+const couponSchema = new Schema(
   {
     code: {
       type: String,
@@ -144,7 +180,7 @@ const couponSchema = new mongoose.Schema(
   }
 );
 
-const wishlistSchema = new mongoose.Schema({
+const wishlistSchema = new Schema({
   email: {
     type: String,
     required: true,
@@ -154,6 +190,20 @@ const wishlistSchema = new mongoose.Schema({
     ref: "Product",
     required: false,
   },
+});
+
+const orderSchema = new Schema({
+  email: String,
+  orderId: String,
+  paymentMethod: String,
+  products: [productSchema],
+  address: {
+    billing: addressSchema,
+    delivery: addressSchema,
+  },
+  name: String,
+  transactionId: String,
+  amount: Number,
 });
 
 const Student = mongoose.model("Student", studentSchema);
@@ -167,6 +217,8 @@ const Product = mongoose.model("Product", productSchema);
 const Category = mongoose.model("Category", categorySchema);
 const Coupon = mongoose.model("Coupon", couponSchema);
 const Wishlist = mongoose.model("Wishlist", wishlistSchema);
+const Address = mongoose.model("Address", addressSchema);
+const Order = mongoose.model("Oder", orderSchema);
 
 export {
   Student,
@@ -180,4 +232,6 @@ export {
   Category,
   Coupon,
   Wishlist,
+  Address,
+  Order,
 };

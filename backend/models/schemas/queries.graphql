@@ -1,0 +1,14 @@
+type Query {
+  signIn(newUser: SigninInput!): Token
+  getCategories: [Category]
+  getProducts: [Product]
+  getProductById(productId: ID!): Product
+  getStudentByFilter(name: String, age: Int): [Student]
+  getMarkByFilter(student_id: ID!): [MarkFilterResult]
+  getCoupons: [Coupon]
+  getCouponById(id: ID!): Coupon
+  getCouponByCode(code: String!): Coupon
+  getWishlists(email: String!): [Wishlist]
+  getAddressByEmail(email: String!): [Address]
+  getOrders: [Order]
+}

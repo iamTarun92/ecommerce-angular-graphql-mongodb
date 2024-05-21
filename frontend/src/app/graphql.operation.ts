@@ -30,7 +30,11 @@ query getProducts {
           description
         }
       }
-    categoryId
+      categoryId {
+        _id
+        name
+        image
+      }    
   }
 }
 `
@@ -62,7 +66,6 @@ mutation SignUp($username:String!, $email: String!, $password: String!) {
   signUp(newUser: { username:$username, email: $email, password: $password }) {
     username
     email
-    password
   }
 }
 `
@@ -72,6 +75,7 @@ query SignIn($email: String!, $password: String!) {
     user {
       username
       email
+      phone
     }
     token
   }
@@ -120,7 +124,11 @@ query GetWishlists($email: String!) {
       isFixedPrice
       stock
       image
-      categoryId
+      categoryId {
+        _id
+        name
+        image
+      }
     }
   }
 }
@@ -140,7 +148,11 @@ mutation AddWishlist($email: String, $productId: String) {
       isFixedPrice
       stock
       image
-      categoryId
+      categoryId {
+        _id
+        name
+        image
+      }
     }
   }
 }
@@ -151,20 +163,50 @@ mutation DeleteWishlist($id: ID!) {
   deleteWishlist(id: $id) {
     _id
     email
-    productId {
+  }
+}
+`
+const Get_Address_By_Email_QUERY = gql`
+query GetAddressByEmail($email: String!) {
+  getAddressByEmail(email: $email) {
+    _id
+    email
+    phone
+    address
+    city
+    state
+    zip
+    primary
+    type
+    fullName
+  }
+}
+`
+
+const ADD_ORDER_QUERY = gql`
+mutation AddOrder($newOrder: OrderInput!) {
+  addOrder(newOrder: $newOrder) {
+    email
+    orderId
+    paymentMethod
+    products {
       _id
       name
-      description
-      price
-      specialPrice
-      isFixedPrice
-      stock
-      image
-      categoryId
     }
+    address {
+      billing {
+        email
+      }
+      delivery {
+        email
+      }
+    }
+    name
+    transactionId
+    amount
   }
 }
 `
 
 
-export { ProductQuery, GET_PRODUCT_BY_ID_QUERY, Sign_UP_QUERY, Sign_In_QUERY, GET_CATEGORIES_QUERY, GetCouponByCodeQuery, GET_COUPON_BY_CODE, GET_WISHLIST_QUERY, ADD_WISHLIST_QUERY, DELETE_WISHLIST_QUERY }
+export { ProductQuery, GET_PRODUCT_BY_ID_QUERY, Sign_UP_QUERY, Sign_In_QUERY, GET_CATEGORIES_QUERY, GetCouponByCodeQuery, GET_COUPON_BY_CODE, GET_WISHLIST_QUERY, ADD_WISHLIST_QUERY, DELETE_WISHLIST_QUERY, Get_Address_By_Email_QUERY, ADD_ORDER_QUERY }

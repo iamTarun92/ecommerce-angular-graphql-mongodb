@@ -2,13 +2,13 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { SelectDropdownComponent } from './components/select-dropdown/select-dropdown.component';
-import { HeaderComponent } from './components/header/header.component';
+import { AddressSelectionComponent } from './components/address-selection/address-selection.component';
 
 
 
 @NgModule({
   declarations: [
-    HeaderComponent,
+    AddressSelectionComponent,
     SelectDropdownComponent
   ],
   imports: [
@@ -19,7 +19,7 @@ import { HeaderComponent } from './components/header/header.component';
   exports: [
     ReactiveFormsModule,
     FormsModule,
-    HeaderComponent,
+    AddressSelectionComponent,
     SelectDropdownComponent
   ]
 })

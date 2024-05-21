@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { CategoryQueryResult, CategoryRoot } from 'src/app/core/models/category';
 import { CommonService } from 'src/app/core/services/common.service';
+import { OrderService } from 'src/app/core/services/order.service';
 
 @Component({
   selector: 'app-category',
@@ -8,15 +9,15 @@ import { CommonService } from 'src/app/core/services/common.service';
   styleUrls: ['./category.component.scss']
 })
 export class CategoryComponent {
-  
+
   baseUrl = 'http://localhost:4000/uploads/'
   categories: CategoryRoot[] = []
 
   constructor(private commonService: CommonService) { }
 
   ngOnInit() {
-    this.commonService.getCategories().subscribe((result: CategoryQueryResult) => {
-      this.categories = result.data.getCategories;
+    this.commonService.getCategories().subscribe((result: CategoryRoot[]) => {
+      this.categories = result;
     });
   }
 }

@@ -1,0 +1,72 @@
+type Mutation {
+  signUp(newUser: SignUpInput!): User
+  addPost(post: PostInput!): Post
+  addWishlist(email: String, productId: String): Wishlist
+  deleteWishlist(id: ID!): Wishlist
+  addOrder(newOrder: OrderInput): Order
+}
+
+input OrderInput {
+  email: String
+  orderId: String
+  paymentMethod: String
+  products: [ProductInput]
+  address: AddressWrapperInput
+  name: String
+  transactionId: String
+  amount: Float
+}
+
+input OptionInput {
+  value: String
+  price: Float
+  description: String
+}
+
+input AttributeInput {
+  name: String
+  options: [OptionInput]
+}
+
+input ProductInput {
+  _id: String
+  name: String
+  description: String
+  price: Float
+  specialPrice: Float
+  isFixedPrice: Boolean
+  stock: Int
+  image: String
+  attributes: [AttributeInput]
+  quantity: Int
+  selectedAttributes: [String]
+}
+
+input AddressInput {
+  _id: String
+  email: String
+  phone: String
+  address: String
+  city: String
+  state: String
+  zip: String
+  primary: Boolean
+  type: String
+  fullName: String
+}
+
+input AddressWrapperInput {
+  billing: AddressInput
+  delivery: AddressInput
+}
+
+input SignUpInput {
+  username: String!
+  email: String!
+  password: String!
+}
+
+input PostInput {
+  title: String!
+  content: String!
+}

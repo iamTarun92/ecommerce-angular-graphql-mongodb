@@ -9,7 +9,10 @@ export interface ProductRoot {
     stock: number
     image: string
     attributes: Attribute[]
-    categoryId:string
+    categoryId: {
+        _id: string
+        name: string
+    }
 }
 
 export interface Attribute {
@@ -27,4 +30,10 @@ export interface ProductQueryResult {
     data: {
         getProducts: ProductRoot[];
     };
+}
+
+export interface WishlistData {
+    _id: string
+    name: string
+    productId: ProductRoot
 }

@@ -1,0 +1,145 @@
+type Option {
+  value: String
+  price: Float
+  description: String
+}
+
+type Attribute {
+  name: String
+  options: [Option]
+}
+
+type Product {
+  _id: ID
+  name: String
+  description: String
+  price: Int
+  specialPrice: Int
+  isFixedPrice: Boolean
+  stock: Int
+  image: String
+  attributes: [Attribute]
+  categoryId: Category
+  quantity: Int
+  selectedAttributes: [String]
+}
+
+type Address {
+  _id: ID!
+  email: String!
+  phone: String!
+  address: String!
+  city: String!
+  state: String!
+  zip: String!
+  primary: Boolean!
+  type: String!
+  fullName: String!
+}
+
+type Order {
+  _id: ID!
+  email: String!
+  orderId: String!
+  paymentMethod: String!
+  products: [Product]
+  address: AddressWrapper
+  name: String!
+  transactionId: String!
+  amount: Float!
+}
+
+type AddressWrapper {
+  billing: Address
+  delivery: Address
+}
+
+type Category {
+  _id: ID
+  name: String!
+  image: String!
+}
+
+type Student {
+  _id: ID
+  name: String
+  age: Int
+  gender: Gender
+  dep_id: Department
+}
+
+enum Gender {
+  Male
+  Female
+}
+
+type Department {
+  _id: ID
+  name: String
+}
+
+type Mark {
+  _id: ID
+  student_id: Student
+  exam_id: Exam
+  subject_id: Subject
+  mark: Int
+}
+
+type MarkFilterResult {
+  _id: ID
+  subjects: [Subject]
+  student: Student
+  exams: [Exam]
+  mark: Int
+}
+
+type Exam {
+  _id: ID
+  name: String
+}
+
+type Subject {
+  _id: ID
+  name: String
+}
+
+type User {
+  _id: ID!
+  username: String!
+  email: String!
+  phone: String
+}
+
+type Post {
+  _id: ID!
+  title: String!
+  content: String!
+  author: User!
+}
+
+type Token {
+  user: User!
+  token: String!
+}
+
+input SigninInput {
+  email: String!
+  password: String!
+}
+
+type Coupon {
+  _id: ID!
+  code: String!
+  discount: Float!
+  startDate: String!
+  endDate: String!
+  minOrder: Float
+  isFixed: Boolean!
+}
+
+type Wishlist {
+  _id: ID!
+  email: String!
+  productId: Product!
+}

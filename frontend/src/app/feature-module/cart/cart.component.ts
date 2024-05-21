@@ -38,6 +38,10 @@ export class CartComponent implements OnInit {
     this.ItemTotalPrice = this.subTotal
     this.isLoggedIn$ = this.authService.isLoggedIn();
 
+    this.isLoggedIn$.subscribe({
+      next: (res) => this.checkAuth = res ? '/checkout' : '/login'
+    })
+
     if (localStorage.getItem('couponCode')) {
       this.couponCode = localStorage.getItem('couponCode')
       this.applyCoupon(this.couponCode, false)
@@ -83,16 +87,16 @@ export class CartComponent implements OnInit {
   applyCoupon(code: string, check: boolean): void {
     if (check) {
       if (this.couponCode !== localStorage.getItem('couponCode')) {
-        this.callCouponCode(code)
+        this.loadCouponCode(code)
       } else {
         this.duplicateCouponCode = true
       }
     } else {
-      this.callCouponCode(code)
+      this.loadCouponCode(code)
     }
   }
 
-  callCouponCode(code: string): void {
+  loadCouponCode(code: string): void {
     this.commonService.getCouponByCode(code).subscribe({
       next: (response: Coupon) => {
         if (response) {

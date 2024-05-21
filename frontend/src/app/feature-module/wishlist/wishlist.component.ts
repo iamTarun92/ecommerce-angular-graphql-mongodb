@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthService, CartService, WishlistService } from 'src/app/core/core.index';
+import { WishlistData } from 'src/app/core/models/product';
 
 @Component({
   selector: 'app-wishlist',
@@ -10,7 +11,7 @@ import { AuthService, CartService, WishlistService } from 'src/app/core/core.ind
 export class WishlistComponent implements OnInit {
 
   baseUrl = 'http://localhost:4000/uploads/'
-  wishLists: any[] = []
+  wishLists: WishlistData[] = []
   products: any[] = []
   productIds: any[] = []
   currentUser: any
@@ -30,7 +31,7 @@ export class WishlistComponent implements OnInit {
 
   loadWishLists() {
     this.wishlistService.getWishlists(this.currentUser.email).subscribe({
-      next: (response) => {
+      next: (response: WishlistData[]) => {
         this.wishLists = response
         this.wishlistService.wishListCount.next(this.wishLists.length)
       }
