@@ -99,6 +99,10 @@ export class CheckoutComponent implements OnInit {
     })
   }
 
+  addressReload(address:AddressRoot) {
+    this.loadAddress()
+  }
+
   billingAddressSelected(address: AddressRoot) {
     this.billingAddress = address;
   }

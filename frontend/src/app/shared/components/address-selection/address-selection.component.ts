@@ -22,19 +22,21 @@ export class AddressSelectionComponent implements OnInit {
 
   constructor(
     private fb: FormBuilder,
-    private apiService: CommonService
+    private commonService: CommonService
   ) { }
 
 
   ngOnInit(): void {
     this.editAddressForm = this.fb.group({
       fullName: ['', Validators.required],
-      address: ['', Validators.required],
       phone: ['', [Validators.required]],
-      city: ['', Validators.required],
-      state: ['', Validators.required],
-      zip: ['', [Validators.required,]],
-      type: ['', [Validators.required,]]
+      type: ['', [Validators.required]],
+      address: this.fb.group({
+        street: ['', Validators.required],
+        city: ['', Validators.required],
+        state: ['', Validators.required],
+        zip: ['', Validators.required]
+      })
     })
   }
 
@@ -56,5 +58,18 @@ export class AddressSelectionComponent implements OnInit {
   cancelEditAddress() {
     this.isEditFormSelected = !this.isEditFormSelected
     this.editAddressForm.reset();
+  }
+
+  updateAddress(id: string) {
+    const addressData = this.editAddressForm.value
+    this.commonService.updateAddress(id, addressData).subscribe({
+      next: res => {
+        this.selectedAddress = null
+        this.isEditFormSelected = !this.isEditFormSelected
+        this.editAddressForm.reset();
+        this.onAddressSelected(res)
+      },
+      error: (error) => console.log(error)
+    })
   }
 }

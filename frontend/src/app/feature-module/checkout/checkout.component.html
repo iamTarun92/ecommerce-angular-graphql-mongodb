@@ -19,6 +19,7 @@
             [addresses]="allAddress"
             [currentUser]="currentUser"
             (addressSelected)="billingAddressSelected($event)"
+            (addressSelected)="addressReload($event)"
             name="billing"
           ></app-address-selection>
         </div>
