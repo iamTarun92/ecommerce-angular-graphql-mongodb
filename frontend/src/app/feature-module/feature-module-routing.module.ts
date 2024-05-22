@@ -35,6 +35,11 @@ const routes: Routes = [
         loadChildren: () => import('./wishlist/wishlist.module').then(m => m.WishlistModule)
       },
       {
+        path: 'profile/addresses',
+        canActivate: [AuthGuard],
+        loadChildren: () => import('./profile/addresses/addresses.module').then(m => m.AddressesModule)
+      },
+      {
         path: ':categoryName',
         loadChildren: () => import('./product/product.module').then(m => m.ProductModule)
       },

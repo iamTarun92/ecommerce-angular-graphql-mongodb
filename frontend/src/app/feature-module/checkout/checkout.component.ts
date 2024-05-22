@@ -206,7 +206,6 @@ export class CheckoutComponent implements OnInit {
       "paymentStatus": "Pending"
 
     }
-    console.log(orderData);
     this.orderService.addOrder(orderData).subscribe({
       next: (response) => {
         alert("Order placed successfully")

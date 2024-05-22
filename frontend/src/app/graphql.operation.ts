@@ -171,17 +171,55 @@ query GetAddressByEmail($email: String!) {
   getAddressByEmail(email: $email) {
     _id
     email
-    phone
-    address
-    city
-    state
-    zip
-    primary
-    type
     fullName
+    phone
+    type
+    address {
+      street
+      city
+      state
+      zip
+    }
   }
 }
 `
+
+const Add_Address_Query = gql`
+mutation AddAddress($newAddress: AddressInput) {
+  addAddress(newAddress: $newAddress) {
+    _id
+    email
+    fullName
+    phone
+    type
+    address {
+      street
+      city
+      state
+      zip
+    }
+  }
+}
+`
+
+const UPDATE_ADDRESS_QUERY = gql`
+mutation UpdateAddress($id: ID!, $address: AddressInput) {
+  updateAddress(id: $id, address: $address) {
+    phone
+  }
+}
+`
+
+const DELETE_ADDRESS_QUERY = gql`
+mutation DeleteAddress($id: ID!) {
+  deleteAddress(id: $id) {
+    _id
+    email
+    fullName
+    phone
+    type
+  }
+}`
 
 const ADD_ORDER_QUERY = gql`
 mutation AddOrder($newOrder: OrderInput!) {
@@ -266,6 +304,7 @@ query GetOrderByOrderId($orderId: String!) {
 }
 `
 
+
 export {
   ProductQuery,
   GET_PRODUCT_BY_ID_QUERY,
@@ -279,5 +318,8 @@ export {
   Get_Address_By_Email_QUERY,
   ADD_ORDER_QUERY,
   Get_Orders_By_Email,
-  Get_Order_By_Order_Id
+  Get_Order_By_Order_Id,
+  Add_Address_Query,
+  UPDATE_ADDRESS_QUERY,
+  DELETE_ADDRESS_QUERY
 }

@@ -31,16 +31,19 @@ type Product {
 }
 
 type Address {
-  _id: ID!
-  email: String!
-  phone: String!
-  address: String!
-  city: String!
-  state: String!
-  zip: String!
-  primary: Boolean!
-  type: String!
-  fullName: String!
+  _id: ID
+  email: String
+  fullName: String
+  phone: String
+  type: String
+  address: AddressDetail
+}
+
+type AddressDetail {
+  street: String
+  city: String
+  state: String
+  zip: String
 }
 
 type AddressWrapper {
@@ -49,13 +52,13 @@ type AddressWrapper {
 }
 
 type Order {
-  _id: ID!
+  _id: ID
   email: String
   orderId: String
   paymentMethod: String
   products: [Product]
   address: AddressWrapper
-  name: String!
+  name: String
   transactionId: String
   amount: Float
   orderStatus: String
@@ -64,8 +67,8 @@ type Order {
 
 type Category {
   _id: ID
-  name: String!
-  image: String!
+  name: String
+  image: String
 }
 
 type Student {
@@ -113,41 +116,41 @@ type Subject {
 }
 
 type User {
-  _id: ID!
-  username: String!
-  email: String!
+  _id: ID
+  username: String
+  email: String
   phone: String
 }
 
 type Post {
-  _id: ID!
-  title: String!
-  content: String!
-  author: User!
+  _id: ID
+  title: String
+  content: String
+  author: User
 }
 
 type Token {
-  user: User!
-  token: String!
+  user: User
+  token: String
 }
 
 input SigninInput {
-  email: String!
-  password: String!
+  email: String
+  password: String
 }
 
 type Coupon {
-  _id: ID!
-  code: String!
-  discount: Float!
-  startDate: String!
-  endDate: String!
+  _id: ID
+  code: String
+  discount: Float
+  startDate: String
+  endDate: String
   minOrder: Float
-  isFixed: Boolean!
+  isFixed: Boolean
 }
 
 type Wishlist {
-  _id: ID!
-  email: String!
-  productId: Product!
+  _id: ID
+  email: String
+  productId: Product
 }

@@ -69,33 +69,27 @@ const Mutation = {
   },
 
   addOrder: async (_, { newOrder }) => {
-    const {
-      email,
-      orderId,
-      paymentMethod,
-      products,
-      address,
-      name,
-      transactionId,
-      amount,
-      orderStatus,
-      paymentStatus,
-    } = newOrder;
-
     const order = new Order({
-      email,
-      orderId,
-      paymentMethod,
-      products,
-      address,
-      name,
-      transactionId,
-      amount,
-      orderStatus,
-      paymentStatus,
+      ...newOrder,
     });
     await order.save();
     return order;
+  },
+
+  addAddress: async (_, { newAddress }) => {
+    const address = new Address({
+      ...newAddress,
+    });
+    await address.save();
+    return address;
+  },
+
+  updateAddress: async (_, { id, address }) => {
+    return await Address.findByIdAndUpdate(id, address, { new: true });
+  },
+
+  deleteAddress: async (_, { id }) => {
+    return await Address.findByIdAndDelete(id);
   },
 };
 

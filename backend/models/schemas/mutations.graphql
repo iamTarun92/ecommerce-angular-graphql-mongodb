@@ -1,9 +1,12 @@
 type Mutation {
-  signUp(newUser: SignUpInput!): User
-  addPost(post: PostInput!): Post
+  signUp(newUser: SignUpInput): User
+  addPost(post: PostInput): Post
   addWishlist(email: String, productId: String): Wishlist
   deleteWishlist(id: ID!): Wishlist
   addOrder(newOrder: OrderInput): Order
+  addAddress(newAddress: AddressInput): Address
+  updateAddress(id: ID!, address: AddressInput): Address
+  deleteAddress(id: ID!): Address
 }
 
 input OrderInput {
@@ -51,17 +54,19 @@ input ProductInput {
   selectedAttributes: [selectedAttributeInout]
 }
 
-input AddressInput {
-  _id: String
-  email: String
-  phone: String
-  address: String
+input AddressDetailInput {
+  street: String
   city: String
   state: String
   zip: String
-  primary: Boolean
-  type: String
+}
+
+input AddressInput {
+  email: String
   fullName: String
+  phone: String
+  type: String
+  address: AddressDetailInput
 }
 
 input AddressWrapperInput {
@@ -70,12 +75,12 @@ input AddressWrapperInput {
 }
 
 input SignUpInput {
-  username: String!
-  email: String!
-  password: String!
+  username: String
+  email: String
+  password: String
 }
 
 input PostInput {
-  title: String!
-  content: String!
+  title: String
+  content: String
 }

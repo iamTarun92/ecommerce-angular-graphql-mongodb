@@ -13,16 +13,16 @@ const attributeSchema = new Schema({
 });
 
 const addressSchema = new Schema({
-  _id: String,
   email: String,
-  phone: String,
-  address: String,
-  city: String,
-  state: String,
-  zip: String,
-  primary: Boolean,
-  type: String,
   fullName: String,
+  phone: String,
+  type: String,
+  address: {
+    street: String,
+    city: String,
+    state: String,
+    zip: String,
+  },
 });
 
 const studentSchema = new Schema({
@@ -135,7 +135,6 @@ const attributeSchema2 = new Schema({
 });
 
 const productSchema = new Schema({
-  _id: mongoose.Schema.Types.ObjectId,
   name: String,
   description: String,
   price: Number,
