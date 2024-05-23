@@ -3,7 +3,7 @@ import { Injectable, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { Apollo, gql } from 'apollo-angular';
 import { BehaviorSubject, Observable, map, tap } from 'rxjs';
-import { Sign_In_QUERY, Sign_UP_QUERY } from 'src/app/graphql.operation';
+import { SIGN_IN_QUERY, Sign_UP_QUERY } from 'src/app/graphql.operation';
 import { SignInResponse } from '../models/user';
 
 
@@ -26,7 +26,7 @@ export class AuthService {
 
   login(email: string, password: string): Observable<SignInResponse> {
     return this.apollo.watchQuery<{ signIn: SignInResponse }>({
-      query: Sign_In_QUERY,
+      query: SIGN_IN_QUERY,
       variables: {
         email,
         password,

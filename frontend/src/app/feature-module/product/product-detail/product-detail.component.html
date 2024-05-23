@@ -11,6 +11,15 @@
       <div class="col-md-8">
         <!-- <div class="small mb-1">SKU: BST-498</div> -->
         <h1 class="display-5 fw-bolder">{{ product.name }}</h1>
+        <div class="reviews-counter" *ngIf="allReview.length">
+          <app-star-rating
+            [rating]="reviewStar"
+            [readOnly]="true"
+            name="rating-1"
+          ></app-star-rating>
+          <span>{{ subTotalNote }} Rating & </span>
+          <span>{{ allReview.length }} Reviews</span>
+        </div>
         <div class="fs-5 mb-5">
           <ng-container *ngIf="hasSpecialPrice(product); else hasSpecial">
             <ng-container *ngIf="hasFixedPrice(product)">
@@ -84,7 +93,72 @@
                 Wishlist
               </button>
             </ng-template>
+            <button
+              type="button"
+              *ngIf="isLoggedIn$ | async"
+              class="btn btn-primary ms-auto"
+              data-bs-toggle="modal"
+              data-bs-target="#exampleModal"
+            >
+              Rate Product
+            </button>
+            <button
+              type="button"
+              *ngIf="!(isLoggedIn$ | async)"
+              class="btn btn-primary ms-auto"
+              routerLink="/login"
+            >
+              Rate Product
+            </button>
           </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="modal" tabindex="-1" id="exampleModal">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Review this product</h5>
+          <button
+            type="button"
+            class="btn-close"
+            data-bs-dismiss="modal"
+            aria-label="Close"
+            #closeBtn
+          ></button>
+        </div>
+        <div class="modal-body">
+          <p class="mb-0">Rating</p>
+          <div class="reviews-counter d-inline-block">
+            <app-star-rating
+              [(rating)]="userRating"
+              name="rating-2"
+            ></app-star-rating>
+          </div>
+          <p class="mb-0 mt-4">Description</p>
+          <textarea
+            #reviewDescription
+            class="w-100"
+            [(ngModel)]="description"
+          ></textarea>
+        </div>
+        <div class="modal-footer">
+          <button
+            type="button"
+            class="btn btn-secondary"
+            data-bs-dismiss="modal"
+          >
+            Close
+          </button>
+          <button
+            type="button"
+            class="btn btn-primary"
+            [disabled]="!isFormValid"
+            (click)="saveReview()"
+          >
+            Save changes
+          </button>
         </div>
       </div>
     </div>

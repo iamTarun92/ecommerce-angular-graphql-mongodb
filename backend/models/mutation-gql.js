@@ -12,6 +12,7 @@ import {
   Wishlist,
   Address,
   Order,
+  Review,
 } from "./mongo-schema.js";
 
 const Mutation = {
@@ -69,19 +70,27 @@ const Mutation = {
   },
 
   addOrder: async (_, { newOrder }) => {
-    const order = new Order({
-      ...newOrder,
-    });
-    await order.save();
-    return order;
+    try {
+      const order = new Order({
+        ...newOrder,
+      });
+      await order.save();
+      return order;
+    } catch (error) {
+      throw error;
+    }
   },
 
   addAddress: async (_, { newAddress }) => {
-    const address = new Address({
-      ...newAddress,
-    });
-    await address.save();
-    return address;
+    try {
+      const address = new Address({
+        ...newAddress,
+      });
+      await address.save();
+      return address;
+    } catch (error) {
+      throw error;
+    }
   },
 
   updateAddress: async (_, { id, address }) => {
@@ -90,6 +99,26 @@ const Mutation = {
 
   deleteAddress: async (_, { id }) => {
     return await Address.findByIdAndDelete(id);
+  },
+
+  addReview: async (_, { newReview }, { userId }) => {
+    try {
+      if (!userId) {
+        throw new Error("Authentication required");
+      }
+      const review = new Review({
+        ...newReview,
+        author: userId,
+      });
+      await review.save();
+      return review;
+    } catch (error) {
+      throw error;
+    }
+  },
+
+  updateReview: async (_, { id, review }) => {
+    return await Review.findByIdAndUpdate(id, review, { new: true });
   },
 };
 

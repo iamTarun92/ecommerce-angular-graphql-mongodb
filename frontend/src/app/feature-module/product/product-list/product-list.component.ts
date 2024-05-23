@@ -29,8 +29,8 @@ export class ProductListComponent implements OnInit {
   ngOnInit() {
     this.currentUser = JSON.parse(this.authService.getCurrentUser() || '{}')
     this.categoryId = this.activeRoute.snapshot.params['categoryId']
-    this.commonService.getProducts().subscribe((result: ProductQueryResult) => {
-      this.products = result.data.getProducts;
+    this.commonService.getProducts().subscribe((products: ProductRoot[]) => {
+      this.products = products;
       this.products = this.products.filter(product => product.categoryId._id == this.categoryId)
       if (this.currentUser.email) {
         this.loadWishLists()

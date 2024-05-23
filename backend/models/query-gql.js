@@ -12,6 +12,7 @@ import {
   Wishlist,
   Address,
   Order,
+  Review,
 } from "./mongo-schema.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
@@ -175,6 +176,10 @@ const Query = {
 
   getOrderByOrderId: async (parent, { orderId }) => {
     return await Order.findOne({ orderId });
+  },
+
+  getReviewsByProductId: async (parent, { product }) => {
+    return await Review.find({ product });
   },
 };
 

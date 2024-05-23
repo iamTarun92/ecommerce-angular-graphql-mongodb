@@ -3,13 +3,15 @@ import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { SelectDropdownComponent } from './components/select-dropdown/select-dropdown.component';
 import { AddressSelectionComponent } from './components/address-selection/address-selection.component';
+import { StarRatingComponent } from './components/star-rating/star-rating.component';
 
 
 
 @NgModule({
   declarations: [
     AddressSelectionComponent,
-    SelectDropdownComponent
+    SelectDropdownComponent,
+    StarRatingComponent
   ],
   imports: [
     CommonModule,
@@ -20,7 +22,8 @@ import { AddressSelectionComponent } from './components/address-selection/addres
     ReactiveFormsModule,
     FormsModule,
     AddressSelectionComponent,
-    SelectDropdownComponent
+    SelectDropdownComponent,
+    StarRatingComponent
   ]
 })
 export class SharedModule { }

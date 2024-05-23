@@ -7,6 +7,14 @@ type Mutation {
   addAddress(newAddress: AddressInput): Address
   updateAddress(id: ID!, address: AddressInput): Address
   deleteAddress(id: ID!): Address
+  addReview(newReview: ReviewInput!): Review
+  updateReview(id: ID!, review: ReviewInput!): Review
+}
+
+input ReviewInput {
+  content: String!
+  product: String
+  note: Float!
 }
 
 input OrderInput {

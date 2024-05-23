@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Apollo, gql } from 'apollo-angular';
 import { Observable, map } from 'rxjs';
-import { ADD_ORDER_QUERY, Get_Order_By_Order_Id, Get_Orders_By_Email } from 'src/app/graphql.operation';
+import { ADD_ORDER_QUERY, GET_ORDER_BY_ID, GET_ORDER_BY_EMAIL } from 'src/app/graphql.operation';
 
 @Injectable({
     providedIn: 'root'
@@ -12,14 +12,14 @@ export class OrderService {
 
     getOrdersByEmail(email: string): Observable<any[]> {
         return this.apollo.watchQuery({
-            query: Get_Orders_By_Email,
+            query: GET_ORDER_BY_EMAIL,
             variables: { email }
         }).valueChanges.pipe(map((result: any) => result.data.getOrdersByEmail));
     }
 
     getOrdersByOrderId(orderId: string): Observable<any> {
         return this.apollo.watchQuery({
-            query: Get_Order_By_Order_Id,
+            query: GET_ORDER_BY_ID,
             variables: { orderId }
         }).valueChanges.pipe(map((result: any) => result.data.getOrderByOrderId));
     }

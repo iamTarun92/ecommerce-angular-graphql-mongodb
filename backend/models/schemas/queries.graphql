@@ -13,4 +13,5 @@ type Query {
   getOrders: [Order]
   getOrdersByEmail(email: String!): [Order]
   getOrderByOrderId(orderId: String!): Order
+  getReviewsByProductId(product: ID!): [Review]
 }

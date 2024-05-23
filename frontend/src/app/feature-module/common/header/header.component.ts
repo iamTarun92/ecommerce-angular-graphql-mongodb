@@ -30,12 +30,18 @@ export class HeaderComponent implements OnInit {
     })
   }
 
+
   ngOnInit() {
     this.isLoggedIn$ = this.authService.isLoggedIn();
     this.currentUser = JSON.parse(this.authService.getCurrentUser() || '{}')
-    this.wishlistService.wishListCount.subscribe((res) => this.wishListCount = res)
-    this.loadWishLists()
+    this.isLoggedIn$.subscribe(isLoggedIn => {
+      if (isLoggedIn) {
+        this.wishlistService.wishListCount.subscribe((res) => this.wishListCount = res)
+        this.loadWishLists()
+      }
+    });
   }
+  
   loadWishLists() {
     this.wishlistService.getWishlists(this.currentUser.email).subscribe({
       next: (response) => {

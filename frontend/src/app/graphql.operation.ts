@@ -1,17 +1,6 @@
 import { gql } from 'apollo-angular';
 
-
-const GET_CATEGORIES_QUERY = gql`
-query getCategories {
-  getCategories {
-    _id
-    name
-    image
-  }
-}
-`
-
-const ProductQuery = gql`
+const GET_PRODUCT_QUERY = gql`
 query getProducts {
   getProducts {
     _id
@@ -61,6 +50,7 @@ const GET_PRODUCT_BY_ID_QUERY = gql`
     }
   }
 `
+
 const Sign_UP_QUERY = gql`
 mutation SignUp($username:String!, $email: String!, $password: String!) {
   signUp(newUser: { username:$username, email: $email, password: $password }) {
@@ -69,7 +59,8 @@ mutation SignUp($username:String!, $email: String!, $password: String!) {
   }
 }
 `
-const Sign_In_QUERY = gql`
+
+const SIGN_IN_QUERY = gql`
 query SignIn($email: String!, $password: String!) {
   signIn(newUser: { email: $email, password: $password }) {
     user {
@@ -82,21 +73,17 @@ query SignIn($email: String!, $password: String!) {
 }
 `
 
-const GetCouponByCodeQuery = gql`
-query GetCouponByCode($code: String!) {
-  getCouponByCode(code: $code) {
+const GET_CATEGORIES_QUERY = gql`
+query getCategories {
+  getCategories {
     _id
-    code
-    discount
-    startDate
-    endDate
-    minOrder
-    isFixed
+    name
+    image
   }
 }
 `
 
-const GET_COUPON_BY_CODE = gql`
+const GET_COUPON_BY_CODE_QUERY = gql`
   query GetCouponByCode($code: String!) {
     getCouponByCode(code: $code) {
       _id
@@ -166,7 +153,8 @@ mutation DeleteWishlist($id: ID!) {
   }
 }
 `
-const Get_Address_By_Email_QUERY = gql`
+
+const GET_ADDRESS_BY_EMAIL_QUERY = gql`
 query GetAddressByEmail($email: String!) {
   getAddressByEmail(email: $email) {
     _id
@@ -184,7 +172,90 @@ query GetAddressByEmail($email: String!) {
 }
 `
 
-const Add_Address_Query = gql`
+const ADD_ORDER_QUERY = gql`
+mutation AddOrder($newOrder: OrderInput!) {
+  addOrder(newOrder: $newOrder) {
+    email
+    orderId
+    paymentMethod
+    products {
+      _id
+      name
+    }
+    address {
+      billing {
+        email
+      }
+      delivery {
+        email
+      }
+    }
+    name
+    transactionId
+    amount
+    orderStatus
+    paymentStatus
+  }
+}
+`
+
+const GET_ORDER_BY_EMAIL = gql`
+query GetOrdersByEmail($email: String!) {
+  getOrdersByEmail(email: $email) {
+    _id
+    email
+    orderId
+    paymentMethod
+    products {
+      _id
+      name
+    }
+    address {
+      billing {
+        email
+      }
+      delivery {
+        email
+      }
+    }
+    name
+    transactionId
+    amount
+    orderStatus
+    paymentStatus
+  }
+}
+`
+
+const GET_ORDER_BY_ID = gql`
+query GetOrderByOrderId($orderId: String!) {
+  getOrderByOrderId(orderId: $orderId) {
+    _id
+    email
+    orderId
+    paymentMethod
+    products {
+      _id
+      name
+    }
+    address {
+      billing {
+        email
+      }
+      delivery {
+        email
+      }
+    }
+    name
+    transactionId
+    amount
+    orderStatus
+    paymentStatus
+  }
+}
+`
+
+const ADD_ADDRESS_QUERY = gql`
 mutation AddAddress($newAddress: AddressInput) {
   addAddress(newAddress: $newAddress) {
     _id
@@ -221,105 +292,81 @@ mutation DeleteAddress($id: ID!) {
   }
 }`
 
-const ADD_ORDER_QUERY = gql`
-mutation AddOrder($newOrder: OrderInput!) {
-  addOrder(newOrder: $newOrder) {
-    email
-    orderId
-    paymentMethod
-    products {
+const Get_Reviews_By_Product_Id_QUERY = gql`
+query GetReviewsByProductId($productId: ID!) {
+  getReviewsByProductId(product: $productId) {
+    _id
+    content
+    author {
+      username
+      email
+      phone
+    }
+    product {
       _id
       name
+      description
+      price
+      specialPrice
+      isFixedPrice
+      stock
+      image
     }
-    address {
-      billing {
-        email
-      }
-      delivery {
-        email
-      }
+    note
+  }
+}`
+
+const ADD_REVIEW_QUERY = gql`
+mutation AddReview($newReview: ReviewInput) {
+  addReview(newReview: $newReview) {
+    _id
+    content
+    author {
+      _id
+      username
+      email
+      phone
     }
-    name
-    transactionId
-    amount
-    orderStatus
-    paymentStatus
+    note
   }
 }
 `
 
-const Get_Orders_By_Email = gql`
-query GetOrdersByEmail($email: String!) {
-  getOrdersByEmail(email: $email) {
+const UPDATE_REVIEW_QUERY = gql`
+mutation UpdateReview($id: ID!, $review: ReviewInput) {
+  updateReview(id: $id, review: $review) {
     _id
-    email
-    orderId
-    paymentMethod
-    products {
+    content
+    author {
       _id
-      name
+      username
+      email
+      phone
     }
-    address {
-      billing {
-        email
-      }
-      delivery {
-        email
-      }
-    }
-    name
-    transactionId
-    amount
-    orderStatus
-    paymentStatus
-  }
-}
-`
-
-const Get_Order_By_Order_Id = gql`
-query GetOrderByOrderId($orderId: String!) {
-  getOrderByOrderId(orderId: $orderId) {
-    _id
-    email
-    orderId
-    paymentMethod
-    products {
-      _id
-      name
-    }
-    address {
-      billing {
-        email
-      }
-      delivery {
-        email
-      }
-    }
-    name
-    transactionId
-    amount
-    orderStatus
-    paymentStatus
+    note
   }
 }
 `
 
 
 export {
-  ProductQuery,
+  GET_PRODUCT_QUERY,
   GET_PRODUCT_BY_ID_QUERY,
-  Sign_UP_QUERY, Sign_In_QUERY,
+  Sign_UP_QUERY,
+  SIGN_IN_QUERY,
   GET_CATEGORIES_QUERY,
-  GetCouponByCodeQuery,
-  GET_COUPON_BY_CODE,
+  GET_COUPON_BY_CODE_QUERY,
   GET_WISHLIST_QUERY,
   ADD_WISHLIST_QUERY,
   DELETE_WISHLIST_QUERY,
-  Get_Address_By_Email_QUERY,
+  GET_ADDRESS_BY_EMAIL_QUERY,
   ADD_ORDER_QUERY,
-  Get_Orders_By_Email,
-  Get_Order_By_Order_Id,
-  Add_Address_Query,
+  GET_ORDER_BY_EMAIL,
+  GET_ORDER_BY_ID,
+  ADD_ADDRESS_QUERY,
   UPDATE_ADDRESS_QUERY,
-  DELETE_ADDRESS_QUERY
+  DELETE_ADDRESS_QUERY,
+  Get_Reviews_By_Product_Id_QUERY,
+  ADD_REVIEW_QUERY,
+  UPDATE_REVIEW_QUERY
 }

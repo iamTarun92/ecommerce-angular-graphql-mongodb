@@ -12,6 +12,7 @@ import {
   Wishlist,
   Address,
   Order,
+  Review,
 } from "./mongo-schema.js";
 import Mutation from "./mutation-gql.js";
 import Query from "./query-gql.js";
@@ -32,6 +33,10 @@ const resolvers = {
   Wishlist: {
     productId: async (product) =>
       await Product.findOne({ _id: product.productId }),
+  },
+  Review: {
+    author: async (review) => await User.findOne({ _id: review.author }),
+    product: async (review) => await Product.findOne({ _id: review.product }),
   },
   Mark: {
     student_id: async (mark) => await Student.findOne({ _id: mark.student_id }),

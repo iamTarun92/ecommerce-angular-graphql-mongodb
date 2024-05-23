@@ -154,3 +154,11 @@ type Wishlist {
   email: String
   productId: Product
 }
+
+type Review {
+  _id: ID
+  content: String
+  author: User
+  product: Product
+  note: Float
+}

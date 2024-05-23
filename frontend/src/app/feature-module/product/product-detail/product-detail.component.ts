@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Observable } from 'rxjs';
 import { Attribute, ProductRoot } from 'src/app/core/models/product';
@@ -10,6 +10,8 @@ import { AuthService, CartService, CommonService, WishlistService } from 'src/ap
   styleUrls: ['./product-detail.component.scss']
 })
 export class ProductDetailComponent implements OnInit {
+  @ViewChild('closeBtn') closeBtn!: ElementRef;
+
   productId: any
   product: any;
   productAttributes: any
@@ -21,7 +23,9 @@ export class ProductDetailComponent implements OnInit {
   selectedPrice = 0
   wishListItems: any
   currentUser: any
-
+  allReview: any[] = []
+  userRating = 0
+  description = ''
 
 
   constructor(
@@ -35,9 +39,11 @@ export class ProductDetailComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
+    this.isLoggedIn$ = this.authService.isLoggedIn();
     this.currentUser = JSON.parse(this.authService.getCurrentUser() || '{}')
     this.productId = this.activeRoute.snapshot.params['productId']
     this.loadProductById(this.productId)
+    this.loadReviewByProductId(this.productId)
   }
 
   loadProductById(id: string) {
@@ -63,7 +69,7 @@ export class ProductDetailComponent implements OnInit {
   addToCart(product: any) {
     const productToAdd = { ...product, quantity: this.quantity };
     productToAdd.stock -= this.quantity;
-    productToAdd.selectedAttributes = this.attributes
+    if (this.attributes.length) productToAdd.selectedAttributes = this.attributes
     this.cartService.addItemToCart(productToAdd)
   }
 
@@ -155,5 +161,69 @@ export class ProductDetailComponent implements OnInit {
       this.router.navigate(['/login']);
     }
 
+  }
+
+  loadReviewByProductId(productId: string) {
+    this.commonService.getReviewsByProductId(productId).subscribe({
+      next: (reviews) => {
+        this.allReview = reviews.getReviewsByProductId
+        this.description = this.filterReviewByUserEmail?.content
+        this.userRating =
+          this.filterReviewByUserEmail?.note
+      }
+    })
+  }
+
+  get reviewStar() {
+    return Math.floor(this.subTotalNote / this.allReview.length)
+  }
+
+  get filterReviewByUserEmail(): any {
+    return this.allReview.find((review: any) => review.author.email === this.currentUser.email)
+  }
+
+  get isFormValid(): boolean {
+    return this.userRating > 0 && this.description !== ''
+  }
+
+  get subTotalNote() {
+    const notes = this.allReview.map(review => review.note);
+    return notes.reduce((acc, current) => acc + current, 0);
+  }
+
+  onRatingChanged(rating: number) {
+    this.userRating = rating;
+  }
+
+  saveReview() {
+    const closeBtn = this.closeBtn.nativeElement as HTMLElement
+
+    const reviewData = {
+      content: this.description,
+      note: this.userRating,
+      product: this.product._id,
+    }
+
+    if (this.filterReviewByUserEmail) {
+      this.commonService.updateReview(this.filterReviewByUserEmail._id, reviewData).subscribe({
+        next: (review) => {
+          alert('Review updated successfully.')
+          this.loadReviewByProductId(this.productId)
+          closeBtn.click()
+          this.userRating = 0
+          this.description = ''
+        }
+      })
+    } else {
+      this.commonService.addReview(reviewData).subscribe({
+        next: (review) => {
+          alert('Review added successfully.')
+          this.loadReviewByProductId(this.productId)
+          closeBtn.click()
+          this.userRating = 0
+          this.description = ''
+        }
+      })
+    }
   }
 }

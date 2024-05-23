@@ -213,6 +213,21 @@ const orderSchema = new Schema({
   paymentStatus: String,
 });
 
+const reviewSchema = new Schema({
+  content: String,
+  author: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "User",
+    required: false,
+  },
+  product: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Product",
+    required: false,
+  },
+  note: String,
+});
+
 const Student = mongoose.model("Student", studentSchema);
 const Department = mongoose.model("Department", departmentSchema);
 const Subject = mongoose.model("Subject", subjectSchema);
@@ -226,6 +241,7 @@ const Coupon = mongoose.model("Coupon", couponSchema);
 const Wishlist = mongoose.model("Wishlist", wishlistSchema);
 const Address = mongoose.model("Address", addressSchema);
 const Order = mongoose.model("Oder", orderSchema);
+const Review = mongoose.model("Review", reviewSchema);
 
 export {
   Student,
@@ -241,4 +257,5 @@ export {
   Wishlist,
   Address,
   Order,
+  Review,
 };
