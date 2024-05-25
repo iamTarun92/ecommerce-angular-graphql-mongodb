@@ -348,6 +348,16 @@ mutation UpdateReview($id: ID!, $review: ReviewInput) {
 }
 `
 
+const Request_Password_Reset_Query = gql`
+mutation RequestPasswordReset($email: String!) {
+  requestPasswordReset(email: $email)
+}
+`
+const Reset_Password_Query = gql`
+  mutation ResetPassword($token: String!, $newPassword: String!) {
+    resetPassword(token: $token, newPassword: $newPassword)
+  }
+`;
 
 export {
   GET_PRODUCT_QUERY,
@@ -368,5 +378,7 @@ export {
   DELETE_ADDRESS_QUERY,
   Get_Reviews_By_Product_Id_QUERY,
   ADD_REVIEW_QUERY,
-  UPDATE_REVIEW_QUERY
+  UPDATE_REVIEW_QUERY,
+  Request_Password_Reset_Query,
+  Reset_Password_Query
 }

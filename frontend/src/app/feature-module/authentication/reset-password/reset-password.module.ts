@@ -1,19 +1,19 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
-import { LoginRoutingModule } from './login-routing.module';
-import { LoginComponent } from './login.component';
+import { ResetPasswordRoutingModule } from './reset-password-routing.module';
+import { ResetPasswordComponent } from './reset-password.component';
 import { SharedModule } from 'src/app/shared/shared.module';
 
 
 @NgModule({
   declarations: [
-    LoginComponent
+    ResetPasswordComponent
   ],
   imports: [
     CommonModule,
-    LoginRoutingModule,
+    ResetPasswordRoutingModule,
     SharedModule
   ]
 })
-export class LoginModule { }
+export class ResetPasswordModule { }

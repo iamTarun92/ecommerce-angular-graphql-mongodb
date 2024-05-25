@@ -4,7 +4,8 @@ import {
   handlegetMarks,
   handlegetStudentss,
   handlegetSubjectss,
-  addStudent
+  addStudent,
+  forgotPassword,
 } from "../controllers/db.js";
 
 const router = express.Router();
@@ -14,4 +15,5 @@ router.get("/marks", handlegetMarks);
 router.get("/students", handlegetStudentss);
 router.get("/subjects", handlegetSubjectss);
 router.post("/students", addStudent);
+router.post("/forgot-pasword", forgotPassword);
 export { router };

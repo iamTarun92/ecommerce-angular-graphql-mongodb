@@ -1,11 +1,7 @@
 import {
   Student,
-  Department,
-  Subject,
   Mark,
-  Exam,
   User,
-  Post,
   Product,
   Category,
   Coupon,
@@ -15,8 +11,7 @@ import {
   Review,
 } from "./mongo-schema.js";
 import bcrypt from "bcrypt";
-import jwt from "jsonwebtoken";
-import { JWT_SECRET } from "../config.js";
+import { crateToken } from "../controllers/db.js";
 
 const Query = {
   getCategories: async () => await Category.find(),
@@ -157,9 +152,7 @@ const Query = {
       if (!isPasswordValid) {
         throw new Error("Invalid password.");
       }
-      const token = jwt.sign({ userId: user._id }, JWT_SECRET, {
-        expiresIn: "1h",
-      });
+      const token = await crateToken(user._id);
       return { user, token };
     } catch (error) {
       throw error;

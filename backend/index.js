@@ -31,6 +31,10 @@ const context = ({ req }) => {
 
 async function startServer() {
   const app = express();
+  app.use(bodyParser.json());
+  app.use(cors({ origin: "*" }));
+  // app.use("/graphql", expressMiddleware(server));
+
 
   // GraphQL Connection
   const server = new ApolloServer({
@@ -44,9 +48,6 @@ async function startServer() {
 
   // await server.start();
 
-  app.use(bodyParser.json());
-  // app.use(cors());
-  // app.use("/graphql", expressMiddleware(server));
 
   // MongoDB Connection
   connectMongoDb(mongoURI)
@@ -54,7 +55,7 @@ async function startServer() {
     .catch((error) => console.log(error));
 
   // Express Routes
-  // app.use("/MongoDB", router);
+  app.use("/MongoDB", router);
 
   // USe for image show with localpath
   app.use("/uploads", express.static("uploads"));

@@ -1,31 +1,27 @@
 import {
-  Student,
-  Department,
-  Subject,
-  Mark,
-  Exam,
   User,
   Post,
-  Product,
-  Category,
-  Coupon,
   Wishlist,
   Address,
   Order,
   Review,
 } from "./mongo-schema.js";
+import { sendEmail } from "./email.js";
+import { securePassword, crateToken } from "../controllers/db.js";
 
 const Mutation = {
   signUp: async (_, { newUser }) => {
     try {
+      const { email, password } = newUser;
+
       // Check if the email is already registered
-      const existingUser = await User.findOne({ email: newUser.email });
+      const existingUser = await User.findOne({ email });
       if (existingUser) {
         throw new Error("Email already registered.");
       }
 
       // Hash the password
-      const hashedPassword = await bcrypt.hash(newUser.password, 10);
+      const hashedPassword = await securePassword(password);
 
       // Create a new user
       const doc = new User({
@@ -119,6 +115,57 @@ const Mutation = {
 
   updateReview: async (_, { id, review }) => {
     return await Review.findByIdAndUpdate(id, review, { new: true });
+  },
+
+  requestPasswordReset: async (_, { email }) => {
+    try {
+      const user = await User.findOne({ email });
+      if (!user) {
+        throw new Error("User not found");
+      }
+      const token = await crateToken(user._id);
+      console.log(token);
+      const updatedUser = await User.updateOne(
+        { email },
+        { $set: { token } },
+        { new: true }
+      );
+      if (!updatedUser) {
+        throw new Error("Failed to update user");
+      }
+      const resetURL = `http://localhost:4200/reset-password?token=${token}`;
+      await sendEmail(
+        email,
+        "Password Reset Request",
+        `Please use this link to reset your password: ${resetURL}`
+      );
+
+      return true;
+    } catch (err) {
+      console.error(err);
+    }
+  },
+
+  resetPassword: async (_, { token, newPassword }) => {
+    const user = await User.findOne({
+      token,
+    });
+
+    if (!user) {
+      throw new Error("Token is invalid or has expired");
+    }
+
+    const hashedPassword = await securePassword(newPassword);
+
+    await User.updateOne(
+      { email: user.email },
+      {
+        $set: { password: hashedPassword },
+        $unset: { token: "" },
+      }
+    );
+
+    return true;
   },
 };
 

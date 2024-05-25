@@ -19,6 +19,14 @@ const routes: Routes = [
         path: 'register',
         loadChildren: () => import('./register/register.module').then(m => m.RegisterModule)
       },
+      {
+        path: 'forget-password',
+        loadChildren: () => import('./forget-password/forget-password.module').then(m => m.ForgetPasswordModule)
+      },
+      {
+        path: 'reset-password',
+        loadChildren: () => import('./reset-password/reset-password.module').then(m => m.ResetPasswordModule)
+      },
     ]
   }];
 

@@ -9,6 +9,8 @@ type Mutation {
   deleteAddress(id: ID!): Address
   addReview(newReview: ReviewInput!): Review
   updateReview(id: ID!, review: ReviewInput!): Review
+  requestPasswordReset(email: String!): Boolean
+  resetPassword(token: String!, newPassword: String!): Boolean
 }
 
 input ReviewInput {

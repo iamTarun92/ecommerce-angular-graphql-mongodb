@@ -105,6 +105,24 @@ const userSchema = new Schema({
     type: String,
     required: false,
   },
+  token:String
+});
+
+const TokenSchema = new Schema({
+  user: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "User",
+    required: true,
+  },
+  token: {
+    type: String,
+    required: false,
+  },
+  createdAt: {
+    type: Date,
+    default: Date.now,
+    expire: 300,
+  },
 });
 
 const postSchema = new Schema({
@@ -242,6 +260,7 @@ const Wishlist = mongoose.model("Wishlist", wishlistSchema);
 const Address = mongoose.model("Address", addressSchema);
 const Order = mongoose.model("Oder", orderSchema);
 const Review = mongoose.model("Review", reviewSchema);
+const Token = mongoose.model("Token", TokenSchema);
 
 export {
   Student,
@@ -258,4 +277,5 @@ export {
   Address,
   Order,
   Review,
+  Token,
 };

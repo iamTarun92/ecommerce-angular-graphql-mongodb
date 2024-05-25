@@ -1,5 +1,15 @@
-import { Student, Department, Subject, Mark, Exam } from "../models/mongo-schema.js";
-import mongoose from "mongoose";
+import {
+  Student,
+  Department,
+  Subject,
+  Mark,
+  Exam,
+  User,
+} from "../models/mongo-schema.js";
+import jwt from "jsonwebtoken";
+import { JWT_SECRET } from "../config.js";
+import { sendEmail } from "../models/email.js";
+import bcrypt from "bcrypt";
 
 async function handlegetSubjectss(req, res) {
   const subjects = await Subject.find();
@@ -126,10 +136,70 @@ async function addStudent(req, res) {
   }
 }
 
+async function forgotPassword(req, res) {
+  try {
+    const { email } = req.body;
+    const user = await User.findOne({ email }); // Use await to handle the promise
+    if (!user) {
+      res.status(404).json({ message: "User not found" });
+    }
+    // Add logic to handle password reset (e.g., sending email)
+    const payload = { userId: user._id };
+    const expiryTime = "1h";
+    const token = jwt.sign(payload, JWT_SECRET, {
+      expiresIn: expiryTime,
+    });
+    const updatedUser = await User.updateOne(
+      { email },
+      { $set: { token } },
+      { new: true } // Return the updated document
+    );
+    if (!updatedUser) {
+      res.status(500).json({ message: "Failed to update user" });
+    }
+    const resetURL = `http://localhost:4200/reset?token=${token}`;
+    await sendEmail(
+      "pandeyt152@gmail.com",
+      "Password Reset Request",
+      `Please use this link to reset your password: ${resetURL}`
+    );
+
+    res.status(200).send("Token has been send on your email.");
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Failed to process request");
+  }
+}
+
+async function crateToken(id) {
+  try {
+    const payload = { userId: id };
+    const expiryTime = "1h";
+    const token = jwt.sign(payload, JWT_SECRET, {
+      expiresIn: expiryTime,
+    });
+    return token;
+  } catch (error) {
+    console.warn(error);
+  }
+}
+
+async function securePassword(password) {
+  try {
+    const hashedPassword = await bcrypt.hash(password, 10);
+    return hashedPassword;
+  } catch (error) {
+    console.warn(error);
+  }
+}
+
 export {
   handlegetSubjectss,
   handlegetMarks,
   handlegetStudentss,
   handlegetDepartmentss,
   addStudent,
+  forgotPassword,
+  crateToken,
+  securePassword,
 };

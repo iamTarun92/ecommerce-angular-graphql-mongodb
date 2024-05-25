@@ -1,9 +1,9 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { Apollo, gql } from 'apollo-angular';
+import { Apollo } from 'apollo-angular';
 import { BehaviorSubject, Observable, map, tap } from 'rxjs';
-import { SIGN_IN_QUERY, Sign_UP_QUERY } from 'src/app/graphql.operation';
+import { Request_Password_Reset_Query, Reset_Password_Query, SIGN_IN_QUERY, Sign_UP_QUERY } from 'src/app/graphql.operation';
 import { SignInResponse } from '../models/user';
 
 
@@ -72,5 +72,25 @@ export class AuthService {
     localStorage.setItem('user', JSON.stringify(res.user));
     this.isLoggedInSubject.next(true);
     this.router.navigate(['category'])
+  }
+
+  requestPasswordReset(email: string) {
+    return this.apollo.mutate({
+      mutation: Request_Password_Reset_Query,
+      variables: {
+        email,
+      },
+    }).pipe(
+      map((result: any) => result.data.requestPasswordReset)
+    );
+  }
+
+  resetPassword(token: string, newPassword: string) {
+    return this.apollo.mutate({
+      mutation: Reset_Password_Query,
+      variables: { token, newPassword }
+    }).pipe(
+      map((result: any) => result.data.resetPassword)
+    );
   }
 }
