@@ -16,11 +16,11 @@ const sendEmail = async (to, subject, text) => {
     text,
   };
 
-  transporter.sendMail(mailOptions, function (error, info) {
+  transporter.sendMail(mailOptions, async (error, data) => {
     if (error) {
       console.log(error);
     } else {
-      console.log("Email sent: " + info.response);
+      console.log("Email sent: " + data.response);
     }
   });
 };

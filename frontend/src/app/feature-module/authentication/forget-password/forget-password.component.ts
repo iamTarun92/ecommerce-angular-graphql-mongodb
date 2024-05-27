@@ -24,8 +24,8 @@ export class ForgetPasswordComponent implements OnInit {
     const { email } = this.forgotForm.value
     this.authService.requestPasswordReset(email).subscribe({
       next: (response) => {
-        this.forgotForm.reset()
         console.log('Password reset email sent', response);
+        this.forgotForm.reset()
       },
       error: (error) => {
         console.error('Error sending password reset email', error);

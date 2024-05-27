@@ -25,8 +25,6 @@ export class ResetPasswordComponent implements OnInit {
 
   ngOnInit(): void {
     this.token = this.activeRoute.snapshot.queryParamMap.get('token')!;
-    console.log(this.token);
-
     this.resetForm = this.fb.group({
       password: ['', [Validators.required, Validators.minLength(8)]],
       passwordConfirmation: ['', Validators.required]

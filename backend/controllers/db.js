@@ -11,18 +11,35 @@ import { JWT_SECRET } from "../config.js";
 import { sendEmail } from "../models/email.js";
 import bcrypt from "bcrypt";
 
-async function handlegetSubjectss(req, res) {
+export const crateToken = async (userId) => {
+  try {
+    const payload = { userId };
+    const expiryTime = 3000;
+    const token = jwt.sign(payload, JWT_SECRET, {
+      expiresIn: expiryTime,
+    });
+    return token;
+  } catch (error) {
+    console.warn(error);
+  }
+};
+
+export const securePassword = async (password) => {
+  try {
+    const hashedPassword = await bcrypt.hash(password, 10);
+    return hashedPassword;
+  } catch (error) {
+    console.warn(error);
+  }
+};
+
+export const handlegetSubjectss = async (req, res) => {
   const subjects = await Subject.find();
   res.json(subjects);
-}
+};
 
-async function handlegetMarks(req, res) {
+export const handlegetMarks = async (req, res) => {
   const marks = await Mark.aggregate([
-    // {
-    //   $match: {
-    //     "student_id._id": ObjectId("661fbdbd92c125f5eee4365f"),
-    //   },
-    // },
     {
       $match: {
         $expr: { student_id: "661fbdbd92c125f5eee4365f" },
@@ -103,9 +120,9 @@ async function handlegetMarks(req, res) {
     },
   ]);
   res.json(marks);
-}
+};
 
-async function handlegetStudentss(req, res) {
+export const handlegetStudentss = async (req, res) => {
   try {
     const students = await Student.find().populate({
       path: "dep_id",
@@ -116,14 +133,14 @@ async function handlegetStudentss(req, res) {
     console.error("Error fetching students:", error);
     res.status(500).json({ error: "Internal server error" });
   }
-}
+};
 
-async function handlegetDepartmentss(req, res) {
+export const handlegetDepartmentss = async (req, res) => {
   const departments = await Department.find();
   res.json(departments);
-}
+};
 
-async function addStudent(req, res) {
+export const addStudent = async (req, res) => {
   try {
     const { name, age, gender } = req.body;
 
@@ -134,25 +151,21 @@ async function addStudent(req, res) {
     console.error(err);
     res.status(500).send("Failed to insert document");
   }
-}
+};
 
-async function forgotPassword(req, res) {
+export const forgotPassword = async (req, res) => {
   try {
     const { email } = req.body;
     const user = await User.findOne({ email }); // Use await to handle the promise
     if (!user) {
       res.status(404).json({ message: "User not found" });
     }
-    // Add logic to handle password reset (e.g., sending email)
-    const payload = { userId: user._id };
-    const expiryTime = "1h";
-    const token = jwt.sign(payload, JWT_SECRET, {
-      expiresIn: expiryTime,
-    });
+
+    const token = await crateToken(user._id);
     const updatedUser = await User.updateOne(
       { email },
       { $set: { token } },
-      { new: true } // Return the updated document
+      { new: true }
     );
     if (!updatedUser) {
       res.status(500).json({ message: "Failed to update user" });
@@ -169,37 +182,4 @@ async function forgotPassword(req, res) {
     console.error(err);
     res.status(500).send("Failed to process request");
   }
-}
-
-async function crateToken(id) {
-  try {
-    const payload = { userId: id };
-    const expiryTime = "1h";
-    const token = jwt.sign(payload, JWT_SECRET, {
-      expiresIn: expiryTime,
-    });
-    return token;
-  } catch (error) {
-    console.warn(error);
-  }
-}
-
-async function securePassword(password) {
-  try {
-    const hashedPassword = await bcrypt.hash(password, 10);
-    return hashedPassword;
-  } catch (error) {
-    console.warn(error);
-  }
-}
-
-export {
-  handlegetSubjectss,
-  handlegetMarks,
-  handlegetStudentss,
-  handlegetDepartmentss,
-  addStudent,
-  forgotPassword,
-  crateToken,
-  securePassword,
 };
