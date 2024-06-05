@@ -6,7 +6,7 @@ import {
   Order,
   Review,
 } from "./mongo-schema.js";
-import { sendEmail } from "./email.js";
+import { sendEmail } from "../email.js";
 import jwt from "jsonwebtoken";
 import { securePassword, crateToken } from "../controllers/db.js";
 import { JWT_SECRET } from "../config.js";
@@ -26,11 +26,11 @@ const Mutation = {
       const hashedPassword = await securePassword(password);
 
       // Create a new user
-      const doc = new User({
+      const user = new User({
         ...newUser,
         password: hashedPassword,
       });
-      return await doc.save();
+      return await user.save();
     } catch (error) {
       throw error;
     }
@@ -44,7 +44,7 @@ const Mutation = {
 
       const newPost = new Post({ ...post, author: userId });
       await newPost.save();
-      return newPost;
+      return "Post added successfully.";
     } catch (error) {
       throw error;
     }

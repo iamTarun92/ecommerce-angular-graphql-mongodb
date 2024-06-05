@@ -16,7 +16,7 @@ type Attribute2 {
 }
 
 type Product {
-  _id: ID
+  _id: ID!
   name: String
   description: String
   price: Int
@@ -31,7 +31,7 @@ type Product {
 }
 
 type Address {
-  _id: ID
+  _id: ID!
   email: String
   fullName: String
   phone: String
@@ -52,7 +52,7 @@ type AddressWrapper {
 }
 
 type Order {
-  _id: ID
+  _id: ID!
   email: String
   orderId: String
   paymentMethod: String
@@ -66,13 +66,13 @@ type Order {
 }
 
 type Category {
-  _id: ID
+  _id: ID!
   name: String
   image: String
 }
 
 type Student {
-  _id: ID
+  _id: ID!
   name: String
   age: Int
   gender: Gender
@@ -85,12 +85,12 @@ enum Gender {
 }
 
 type Department {
-  _id: ID
+  _id: ID!
   name: String
 }
 
 type Mark {
-  _id: ID
+  _id: ID!
   student_id: Student
   exam_id: Exam
   subject_id: Subject
@@ -98,7 +98,7 @@ type Mark {
 }
 
 type MarkFilterResult {
-  _id: ID
+  _id: ID!
   subjects: [Subject]
   student: Student
   exams: [Exam]
@@ -106,24 +106,25 @@ type MarkFilterResult {
 }
 
 type Exam {
-  _id: ID
+  _id: ID!
   name: String
 }
 
 type Subject {
-  _id: ID
+  _id: ID!
   name: String
 }
 
 type User {
-  _id: ID
+  _id: ID!
   username: String
   email: String
   phone: String
+  password: String
 }
 
 type Post {
-  _id: ID
+  _id: ID!
   title: String
   content: String
   author: User
@@ -135,12 +136,12 @@ type Token {
 }
 
 input SigninInput {
-  email: String
-  password: String
+  email: String!
+  password: String!
 }
 
 type Coupon {
-  _id: ID
+  _id: ID!
   code: String
   discount: Float
   startDate: String
@@ -150,13 +151,13 @@ type Coupon {
 }
 
 type Wishlist {
-  _id: ID
+  _id: ID!
   email: String
   productId: Product
 }
 
 type Review {
-  _id: ID
+  _id: ID!
   content: String
   author: User
   product: Product

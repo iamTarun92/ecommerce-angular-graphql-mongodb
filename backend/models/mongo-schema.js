@@ -105,7 +105,6 @@ const userSchema = new Schema({
     type: String,
     required: false,
   },
-  token:String
 });
 
 const TokenSchema = new Schema({

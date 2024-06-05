@@ -1,6 +1,5 @@
 import express from "express";
 import { ApolloServer } from "@apollo/server";
-import { expressMiddleware } from "@apollo/server/express4";
 import bodyParser from "body-parser";
 import cors from "cors";
 import jwt from "jsonwebtoken";
@@ -33,26 +32,22 @@ async function startServer() {
   const app = express();
   app.use(bodyParser.json());
   app.use(cors({ origin: "*" }));
-  // app.use("/graphql", expressMiddleware(server));
 
+  // MongoDB Connection
+  connectMongoDb(mongoURI)
+    .then(() => console.log("Connected to MongoDB"))
+    .catch((error) => console.log(error));
 
   // GraphQL Connection
   const server = new ApolloServer({
     typeDefs,
     resolvers,
   });
+  
   await startStandaloneServer(server, {
     context,
     listen: { port: 3000 },
   });
-
-  // await server.start();
-
-
-  // MongoDB Connection
-  connectMongoDb(mongoURI)
-    .then(() => console.log("Connected to MongoDB"))
-    .catch((error) => console.log(error));
 
   // Express Routes
   app.use("/MongoDB", router);

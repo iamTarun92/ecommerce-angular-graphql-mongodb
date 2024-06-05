@@ -8,7 +8,7 @@ import {
 } from "../models/mongo-schema.js";
 import jwt from "jsonwebtoken";
 import { JWT_SECRET } from "../config.js";
-import { sendEmail } from "../models/email.js";
+import { sendEmail } from "../email.js";
 import bcrypt from "bcrypt";
 
 export const crateToken = async (userId) => {

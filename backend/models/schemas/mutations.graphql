@@ -1,6 +1,6 @@
 type Mutation {
   signUp(newUser: SignUpInput): User
-  addPost(post: PostInput): Post
+  addPost(post: PostInput): String
   addWishlist(email: String, productId: String): Wishlist
   deleteWishlist(id: ID!): Wishlist
   addOrder(newOrder: OrderInput): Order
@@ -91,6 +91,6 @@ input SignUpInput {
 }
 
 input PostInput {
-  title: String
-  content: String
+  title: String!
+  content: String!
 }
